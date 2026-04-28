@@ -27,6 +27,7 @@ const AdminDashboard = () => {
         { path: '/admin/payments', icon: <CreditCard size={20} />, label: 'Payments' },
         { path: '/admin/stories', icon: <TrendingUp size={20} />, label: 'Success Stories' },
         { path: '/admin/certificates', icon: <Award size={20} />, label: 'Certificates' },
+        { path: '/profile', icon: <Users size={20} />, label: 'My Profile' },
     ];
 
     return (
