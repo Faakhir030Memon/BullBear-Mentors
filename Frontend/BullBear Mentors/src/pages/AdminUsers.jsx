@@ -170,6 +170,7 @@ const AdminUsers = () => {
                 </table>
             </div>
 
+            <style>{`
                 .admin-header { margin-bottom: 24px; }
                 .user-info { display: flex; align-items: center; gap: 12px; }
                 .user-avatar-container { position: relative; }
