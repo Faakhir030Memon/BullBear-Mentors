@@ -74,7 +74,7 @@ const HomePage = () => {
                 <div className="container">
                     <div className="overview-grid">
                         <div className="overview-image">
-                            <img src="https://images.unsplash.com/photo-1611974714851-48206139d733?auto=format&fit=crop&q=80&w=800" alt="Trading Analysis" />
+                            <img src="https://images.unsplash.com/photo-1611974714851-48206139d733?q=80&w=800&auto=format&fit=crop" alt="Trading Analysis" />
                         </div>
                         <div className="overview-text">
                             <div className="badge">Why BullBear Mentors?</div>
