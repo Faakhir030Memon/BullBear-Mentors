@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
+import { Book, Clock, PlayCircle, Loader, Download, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const MyLearningPage = () => {
@@ -28,9 +28,9 @@ const MyLearningPage = () => {
 
     if (loading) return <div className="loader-container"><Loader size={48} className="animate-spin text-success" /></div>;
 
+    // Admin ke verify karne ke baad status 'active' hota hai
     const activePurchases = purchases.filter(p => p.status === 'active' && new Date(p.expiryDate) > new Date());
     const pendingPurchases = purchases.filter(p => p.status === 'pending');
-    const approvedPurchases = purchases.filter(p => p.status === 'approved');
 
     return (
         <div className="my-learning container py-5 fade-in">
@@ -40,7 +40,7 @@ const MyLearningPage = () => {
             </div>
 
             <div className="learning-grid">
-                {/* Active Courses */}
+                {/* Active Courses - Left Side */}
                 <div className="active-courses">
                     <h2>Active Courses</h2>
                     {activePurchases.length > 0 ? (
@@ -59,16 +59,28 @@ const MyLearningPage = () => {
                                         Start Learning <PlayCircle size={18} />
                                     </Link>
                                 </div>
-                                {p.course?.materials?.length > 0 && (
-                                    <div className="course-materials mt-3">
-                                        <strong>Course Materials:</strong>
-                                        <div className="material-list mt-2">
-                                            {p.course.materials.map((m, i) => (
-                                                <a key={i} href={m.url} download className="material-link">
-                                                    <Download size={14} /> {m.title}
+
+                                {/* Course files / materials */}
+                                {p.course?.content && p.course.content.length > 0 && (
+                                    <div className="course-materials">
+                                        <p className="materials-title">📁 Course Materials</p>
+                                        {p.course.content.map((item, i) => (
+                                            <div key={i} className="material-item">
+                                                <span className="material-label">
+                                                    {item.fileType?.includes('video') ? '🎬' : item.fileType?.includes('pdf') ? '📄' : '📁'}
+                                                    {' '}{item.title}
+                                                </span>
+                                                <a
+                                                    href={item.fileUrl}
+                                                    download
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="download-btn-inline"
+                                                >
+                                                    <Download size={13} /> Download
                                                 </a>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>
@@ -82,8 +94,10 @@ const MyLearningPage = () => {
                     )}
                 </div>
 
-                {/* Pending, Approved & Stats */}
+                {/* Right Sidebar */}
                 <aside className="learning-sidebar">
+
+                    {/* Pending Verifications */}
                     <div className="pending-section card mb-4">
                         <h3>Pending Verifications</h3>
                         {pendingPurchases.length > 0 ? (
@@ -101,23 +115,47 @@ const MyLearningPage = () => {
                         )}
                     </div>
 
-                    <div className="approved-section card mb-4">
-                        <h3>Approved Downloads</h3>
-                        {approvedPurchases.length > 0 ? (
-                            approvedPurchases.map(p => (
-                                <div key={p._id} className="pending-item">
-                                    <div className="pending-info">
-                                        <strong>{p.course?.title}</strong>
+                    {/* Approved (Active) Courses with Downloads */}
+                    {activePurchases.length > 0 && (
+                        <div className="approved-section card mb-4">
+                            <h3><CheckCircle size={16} style={{color: '#16a34a', marginRight: 6, verticalAlign: 'middle'}} />Approved Courses</h3>
+                            {activePurchases.map(p => (
+                                <div key={p._id} className="approved-item">
+                                    <div className="approved-header">
+                                        <div className="approved-info">
+                                            <strong>{p.course?.title}</strong>
+                                            <span>Valid till: {new Date(p.expiryDate).toLocaleDateString()}</span>
+                                        </div>
+                                        <span className="status-badge approved">APPROVED ✓</span>
                                     </div>
-                                    <a href={p.downloadUrl} className="btn btn-sm btn-outline-success">
-                                        <Download size={14} />
-                                    </a>
+
+                                    {/* Download buttons */}
+                                    {p.course?.content && p.course.content.length > 0 ? (
+                                        <div className="sidebar-downloads">
+                                            <p className="download-label">📥 Download Files:</p>
+                                            {p.course.content.map((item, i) => (
+                                                <a
+                                                    key={i}
+                                                    href={item.fileUrl}
+                                                    download
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="sidebar-download-btn"
+                                                >
+                                                    <Download size={13} />
+                                                    {' '}
+                                                    {item.fileType?.includes('video') ? '🎬' : item.fileType?.includes('pdf') ? '📄' : '📁'}
+                                                    {' '}{item.title}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="no-files-msg">Materials are being prepared by the instructor.</p>
+                                    )}
                                 </div>
-                            ))
-                        ) : (
-                            <p className="no-pending">No approved downloads available.</p>
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="help-section card">
                         <h3>Need Help?</h3>
@@ -140,11 +178,23 @@ const MyLearningPage = () => {
                 .course-info { flex-grow: 1; }
                 .course-info h3 { font-size: 18px; margin-bottom: 4px; }
                 .expiry-info { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
-                .course-materials { border-top: 1px solid var(--border-color); padding-top: 15px; }
-                .material-list { display: flex; gap: 10px; flex-wrap: wrap; }
-                .material-link { font-size: 12px; display: flex; align-items: center; gap: 5px; color: var(--primary); text-decoration: none; background: #f0f7ff; padding: 5px 10px; border-radius: 4px; }
                 .empty-state { text-align: center; padding: 60px; }
-                .pending-section h3, .approved-section h3 { font-size: 16px; margin-bottom: 20px; }
+
+                /* Course materials inside active card */
+                .course-materials { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color, #eee); }
+                .materials-title { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+                .material-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f9f9f9; border-radius: 6px; margin-bottom: 6px; border: 1px solid #f0f0f0; }
+                .material-label { font-size: 13px; color: #333; display: flex; align-items: center; gap: 6px; }
+                .download-btn-inline { 
+                    display: flex; align-items: center; gap: 4px;
+                    font-size: 12px; font-weight: 600; color: var(--success, #16a34a); 
+                    text-decoration: none; padding: 5px 10px; border: 1px solid var(--success, #16a34a); 
+                    border-radius: 5px; white-space: nowrap; transition: all 0.2s;
+                }
+                .download-btn-inline:hover { background: var(--success, #16a34a); color: white; }
+
+                /* Sidebar */
+                .pending-section h3, .approved-section h3, .help-section h3 { font-size: 16px; margin-bottom: 20px; }
                 .pending-item { 
                     display: flex; justify-content: space-between; align-items: center; 
                     padding: 12px 0; border-bottom: 1px solid var(--border-color);
@@ -152,14 +202,36 @@ const MyLearningPage = () => {
                 .pending-info { display: flex; flex-direction: column; }
                 .pending-info strong { font-size: 14px; }
                 .pending-info span { font-size: 11px; color: var(--text-secondary); }
-                .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+
+                /* Approved section in sidebar */
+                .approved-item { padding: 14px 0; border-bottom: 1px solid var(--border-color, #eee); }
+                .approved-item:last-child { border-bottom: none; }
+                .approved-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
+                .approved-info { display: flex; flex-direction: column; }
+                .approved-info strong { font-size: 14px; }
+                .approved-info span { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+                /* Sidebar download buttons */
+                .sidebar-downloads { display: flex; flex-direction: column; gap: 6px; }
+                .download-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+                .sidebar-download-btn {
+                    display: flex; align-items: center; gap: 6px; width: 100%; padding: 8px 12px;
+                    background: var(--success, #16a34a); color: white; font-size: 12px; font-weight: 600;
+                    border-radius: 6px; text-decoration: none; transition: opacity 0.2s;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                }
+                .sidebar-download-btn:hover { opacity: 0.85; color: white; }
+                .no-files-msg { font-size: 12px; color: var(--text-secondary); font-style: italic; margin-top: 4px; }
+
+                /* Status badges */
+                .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
                 .status-badge.pending { background: #fff7e6; color: #faad14; }
+                .status-badge.approved { background: #f6ffed; color: #16a34a; border: 1px solid #b7eb8f; }
+
                 .no-pending { font-size: 13px; color: var(--text-secondary); }
-                .help-section h3 { font-size: 16px; margin-bottom: 15px; }
                 .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
                 .mb-3 { margin-bottom: 1rem; }
                 .mb-4 { margin-bottom: 1.5rem; }
-                .mt-2 { margin-top: 0.5rem; }
                 .mt-3 { margin-top: 1rem; }
                 @media (max-width: 992px) {
                     .learning-grid { grid-template-columns: 1fr; }
