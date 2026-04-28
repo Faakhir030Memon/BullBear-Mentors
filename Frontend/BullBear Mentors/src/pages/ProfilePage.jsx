@@ -267,6 +267,7 @@ const ProfilePage = () => {
                 </div>
             </div>
 
+            <style>{`
                 .avatar-container { position: relative; width: 100px; height: 100px; margin: 0 auto 20px; }
                 .avatar { width: 100%; height: 100%; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; overflow: hidden; }
                 .avatar img { width: 100%; height: 100%; object-fit: cover; }
