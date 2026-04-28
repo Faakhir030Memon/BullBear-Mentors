@@ -26,19 +26,32 @@ const CourseDetailsPage = () => {
     const [purchaseLoading, setPurchaseLoading] = useState(false);
     const [purchaseSuccess, setPurchaseSuccess] = useState(false);
 
+    const [isEnrolled, setIsEnrolled] = useState(false);
+
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchCourseAndStatus = async () => {
             try {
                 const { data } = await axios.get(`/api/courses/${id}`);
                 setCourse(data);
+                
+                if (user) {
+                    const purchaseRes = await axios.get('/api/purchase/my', {
+                        headers: { Authorization: `Bearer ${user.token}` }
+                    });
+                    const activePurchase = purchaseRes.data.find(p => p.course._id === id && p.status === 'active');
+                    if (activePurchase) {
+                        setIsEnrolled(true);
+                    }
+                }
+                
                 setLoading(false);
             } catch (err) {
                 setError('Failed to load course details');
                 setLoading(false);
             }
         };
-        fetchCourse();
-    }, [id]);
+        fetchCourseAndStatus();
+    }, [id, user]);
 
     const handlePurchase = async (e) => {
         e.preventDefault();
@@ -87,7 +100,7 @@ const CourseDetailsPage = () => {
                         <div className="course-meta">
                             <div className="meta-item">
                                 <Clock size={18} />
-                                <span>30+ Hours Content</span>
+                                <span>Premium Course</span>
                             </div>
                             <div className="meta-item">
                                 <ShieldCheck size={18} />
@@ -100,14 +113,32 @@ const CourseDetailsPage = () => {
                         <h2>Course Content</h2>
                         {course.content && course.content.length > 0 ? (
                             course.content.map((item, index) => (
-                                <div key={index} className="content-item">
-                                    <PlayCircle size={20} className="text-secondary" />
-                                    <span>{item.title}</span>
-                                    <span className="duration">Video Lesson</span>
+                                <div key={index} className="content-item" style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '15px', borderBottom: '1px solid #eee'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
+                                        <PlayCircle size={20} className="text-secondary" style={{marginRight: '10px'}} />
+                                        <strong>{item.title}</strong>
+                                        <span className="duration" style={{marginLeft: 'auto', fontSize: '12px', color: '#666'}}>
+                                            {isEnrolled ? (item.fileType?.includes('video') ? 'Video' : 'Document') : 'Locked'}
+                                        </span>
+                                    </div>
+                                    <p style={{fontSize: '14px', color: '#666', marginTop: '5px', marginLeft: '30px'}}>{item.description}</p>
+                                    
+                                    {isEnrolled ? (
+                                        <div style={{marginTop: '10px', marginLeft: '30px'}}>
+                                            <a href={item.fileUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
+                                                View/Download Material
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div style={{marginTop: '10px', marginLeft: '30px', fontSize: '12px', color: '#faad14'}}>
+                                            <Lock size={12} style={{display: 'inline', marginRight: '5px'}} />
+                                            Content locked until payment verification.
+                                        </div>
+                                    )}
                                 </div>
                             ))
                         ) : (
-                            <p className="no-content">Content details will be visible after enrollment.</p>
+                            <p className="no-content">No materials attached yet.</p>
                         )}
                     </div>
                 </div>
