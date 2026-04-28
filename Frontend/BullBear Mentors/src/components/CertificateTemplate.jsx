@@ -30,20 +30,33 @@ const CertificateTemplate = ({ cert }) => {
                         </div>
 
                         <div className="cert-footer">
+                            {/* Manager (Left) */}
                             <div className="footer-item">
+                                <div className="signature-container">
+                                    <img src="/manager-sig.png" alt="Manager Signature" className="signature-img" onError={(e) => e.target.style.display = 'none'} />
+                                </div>
                                 <div className="signature-line"></div>
-                                <p>Faakhir Memon</p>
-                                <span>Founder, BullBear Mentors</span>
+                                <p>Manager</p>
+                                <span>BullBear Mentors</span>
                             </div>
                             
+                            {/* Center Stamp & Date */}
                             <div className="cert-seal">
-                                <ShieldCheck size={60} />
-                                <span>VERIFIED</span>
+                                <ShieldCheck size={50} />
+                                <span className="seal-text">BBM VERIFIED</span>
+                                <div className="date-badge">
+                                    {new Date(cert.completionDate).toLocaleDateString()}
+                                </div>
                             </div>
 
+                            {/* Director (Right) */}
                             <div className="footer-item">
-                                <div className="date-value">{new Date(cert.completionDate).toLocaleDateString()}</div>
-                                <span>Date of Issue</span>
+                                <div className="signature-container">
+                                    <img src="/director-sig.png" alt="Director Signature" className="signature-img" onError={(e) => e.target.style.display = 'none'} />
+                                </div>
+                                <div className="signature-line"></div>
+                                <p>Faakhir Memon</p>
+                                <span>Director, BBM</span>
                             </div>
                         </div>
 
@@ -109,16 +122,20 @@ const CertificateTemplate = ({ cert }) => {
                 .course-name { font-size: 28px; font-weight: 700; margin: 10px 0; border-bottom: 2px solid #eee; display: inline-block; padding: 0 20px; }
                 .grade-text { font-weight: 700; color: #1a1a1a; }
 
-                .cert-footer { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 1; }
+                .cert-footer { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 1; padding: 0 40px; margin-top: 40px; }
                 .footer-item { text-align: center; width: 200px; }
-                .signature-line { border-bottom: 2px solid #1a1a1a; margin-bottom: 10px; height: 40px; }
+                
+                .signature-container { position: relative; height: 80px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: -10px; z-index: 2; }
+                .signature-img { max-height: 100px; max-width: 160px; object-fit: contain; filter: grayscale(100%) contrast(200%) brightness(0.4) saturate(0); mix-blend-mode: multiply; }
+                .signature-line { border-bottom: 2px solid #1a1a1a; margin-bottom: 10px; width: 100%; }
+                
                 .footer-item p { margin: 0; font-weight: 700; font-size: 16px; }
                 .footer-item span { font-size: 12px; color: #666; }
                 
-                .cert-seal { color: #c9a050; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0.8; }
-                .cert-seal span { font-size: 10px; font-weight: 800; letter-spacing: 2px; }
-
-                .date-value { font-size: 18px; font-weight: 700; border-bottom: 1px solid #1a1a1a; margin-bottom: 10px; padding-bottom: 5px; }
+                .cert-seal { color: #c9a050; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0.9; margin: 0 20px; }
+                .seal-text { font-size: 12px; font-weight: 800; letter-spacing: 2px; border: 2px solid #c9a050; padding: 2px 8px; border-radius: 4px; margin-top: 5px; }
+                
+                .date-badge { margin-top: 10px; font-size: 14px; font-weight: 700; color: #1a1a1a; }
                 
                 .cert-id { position: absolute; bottom: 10px; right: 10px; font-size: 10px; font-family: monospace; opacity: 0.5; }
 
