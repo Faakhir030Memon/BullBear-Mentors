@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -26,6 +27,9 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+// Static folder
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
