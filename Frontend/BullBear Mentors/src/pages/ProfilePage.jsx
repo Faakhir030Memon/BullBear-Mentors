@@ -152,7 +152,7 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .profile-page {
                     padding: 60px 20px;
                 }

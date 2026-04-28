@@ -67,7 +67,7 @@ const CoursesPage = () => {
                 )}
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .page-header {
                     display: flex;
                     justify-content: space-between;

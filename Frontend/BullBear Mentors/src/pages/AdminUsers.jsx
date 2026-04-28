@@ -73,7 +73,7 @@ const AdminUsers = () => {
                             <tr key={u._id}>
                                 <td>
                                     <div className="user-info">
-                                        <div className="user-avatar">{u.firstName[0]}</div>
+                                        <div className="user-avatar">{u.firstName?.[0] || 'U'}</div>
                                         <span>{u.firstName} {u.lastName}</span>
                                     </div>
                                 </td>
@@ -110,7 +110,7 @@ const AdminUsers = () => {
                 </table>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .admin-header { margin-bottom: 24px; }
                 .user-info { display: flex; align-items: center; gap: 10px; }
                 .user-avatar { 

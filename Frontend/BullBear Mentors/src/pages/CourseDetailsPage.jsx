@@ -191,7 +191,7 @@ const CourseDetailsPage = () => {
                 </aside>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .details-grid {
                     display: grid;
                     grid-template-columns: 1fr 400px;

@@ -37,7 +37,7 @@ const CourseCard = ({ course }) => {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .course-card {
                     padding: 0;
                     overflow: hidden;

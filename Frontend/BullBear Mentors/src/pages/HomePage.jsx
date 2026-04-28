@@ -77,7 +77,7 @@ const HomePage = () => {
                 </div>
             </section>
 
-            <style jsx>{`
+            <style>{`
                 .home-page {
                     padding-bottom: 80px;
                 }

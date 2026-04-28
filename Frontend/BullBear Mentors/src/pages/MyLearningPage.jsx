@@ -96,7 +96,7 @@ const MyLearningPage = () => {
                 </aside>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .section-header { margin-bottom: 48px; }
                 .learning-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
                 .active-courses h2 { margin-bottom: 24px; }

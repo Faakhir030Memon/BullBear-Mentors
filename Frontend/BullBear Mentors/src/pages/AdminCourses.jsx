@@ -169,7 +169,7 @@ const AdminCourses = () => {
                 </table>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .admin-header {
                     display: flex;
                     justify-content: space-between;

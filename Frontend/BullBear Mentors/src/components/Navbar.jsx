@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { TrendingUp, User, LogOut, BookOpen, Home, Info, Shield } from 'lucide-react';
+import { TrendingUp, User, LogOut, BookOpen, Home, Info, Shield, PlayCircle } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -43,7 +43,7 @@ const Navbar = () => {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .navbar {
                     height: 70px;
                     background-color: white;

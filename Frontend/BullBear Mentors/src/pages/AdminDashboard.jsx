@@ -69,7 +69,7 @@ const AdminDashboard = () => {
                 </main>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .admin-grid {
                     display: grid;
                     grid-template-columns: 280px 1fr;

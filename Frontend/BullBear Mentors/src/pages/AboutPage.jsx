@@ -90,7 +90,7 @@ const AboutPage = () => {
                 </div>
             </section>
 
-            <style jsx>{`
+            <style>{`
                 .about-hero {
                     margin-bottom: 80px;
                 }

@@ -63,7 +63,7 @@ const AdminPayments = () => {
                             <tr key={p._id}>
                                 <td>
                                     <div className="user-info">
-                                        <strong>{p.user?.firstName} {p.user?.lastName}</strong>
+                                        <strong>{p.user?.firstName || 'Unknown'} {p.user?.lastName || 'User'}</strong>
                                         <span className="email">{p.user?.email}</span>
                                     </div>
                                 </td>
@@ -94,7 +94,7 @@ const AdminPayments = () => {
                 </table>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .admin-header { margin-bottom: 24px; }
                 .user-info { display: flex; flex-direction: column; }
                 .email { font-size: 12px; color: var(--text-secondary); }

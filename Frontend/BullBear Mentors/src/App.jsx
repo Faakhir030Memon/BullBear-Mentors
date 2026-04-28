@@ -19,7 +19,7 @@ import AdminDashboard from './pages/AdminDashboard';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Navbar />
         <Routes>
           {/* Public Routes */}
@@ -46,7 +46,7 @@ function App() {
         </Routes>
       </Router>
       
-      <style jsx global>{`
+      <style>{`
         .py-5 { padding-top: 3rem; padding-bottom: 3rem; }
       `}</style>
     </AuthProvider>
