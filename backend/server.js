@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/courses', require('./routes/courseRoutes'));
 
 app.get('/', (req, res) => {
     res.send('API is running...');
