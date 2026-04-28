@@ -247,6 +247,11 @@ const ProfilePage = () => {
                             </div>
                         )}
 
+                        <div className="settings-section" style={{borderTop: '1px solid #eee', paddingTop: '30px'}}>
+                            <h2>Profile Settings</h2>
+                            <p className="subtitle">Update your personal information and security settings</p>
+                        </div>
+                        
                         <form onSubmit={handleSubmit}>
                             <div className="form-section">
                                 <h3>Personal Information</h3>
