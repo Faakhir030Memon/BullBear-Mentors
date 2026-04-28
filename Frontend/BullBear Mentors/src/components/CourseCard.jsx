@@ -31,9 +31,15 @@ const CourseCard = ({ course }) => {
                 </div>
 
                 <div className="course-footer">
-                    <Link to={`/courses/${course._id}`} className="btn btn-primary btn-block">
-                        View Details <ChevronRight size={18} />
-                    </Link>
+                    {course.content && course.content.length > 0 ? (
+                        <Link to={`/courses/${course._id}`} className="btn btn-primary btn-block">
+                            Apply Now <ChevronRight size={18} />
+                        </Link>
+                    ) : (
+                        <button disabled className="btn btn-secondary btn-block" style={{opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#6c757d', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            Coming Soon
+                        </button>
+                    )}
                 </div>
             </div>
 

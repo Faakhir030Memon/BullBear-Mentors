@@ -111,8 +111,12 @@ const HomePage = () => {
                                     <h3>{course.title}</h3>
                                     <p>{course.description.substring(0, 80)}...</p>
                                     <div className="course-footer">
-                                        <span className="price">{course.price} PKR</span>
-                                        <Link to={`/courses/${course._id}`} className="btn btn-primary btn-sm">Join Now</Link>
+                                        <span className="price">{course.prices?.oneMonth?.toLocaleString()} PKR</span>
+                                        {course.content && course.content.length > 0 ? (
+                                            <Link to={`/courses/${course._id}`} className="btn btn-primary btn-sm">Apply Now</Link>
+                                        ) : (
+                                            <button disabled className="btn btn-secondary btn-sm" style={{opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#6c757d', color: 'white'}}>Coming Soon</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
