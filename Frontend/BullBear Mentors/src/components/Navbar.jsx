@@ -25,6 +25,7 @@ const Navbar = () => {
                 <div className="nav-links">
                     <Link to="/" className="nav-link"><Home size={18} /> Home</Link>
                     <Link to="/courses" className="nav-link"><BookOpen size={18} /> Courses</Link>
+                    <Link to="/my-learning" className="nav-link"><PlayCircle size={18} /> My Learning</Link>
                     <Link to="/about" className="nav-link"><Info size={18} /> About</Link>
                     {user.role === 'admin' && (
                         <Link to="/admin" className="nav-link text-danger"><Shield size={18} /> Admin</Link>
