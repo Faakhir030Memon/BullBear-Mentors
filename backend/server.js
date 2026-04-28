@@ -38,6 +38,7 @@ app.use('/api/purchase', require('./routes/purchaseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
 app.use('/api/stories', require('./routes/storyRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
 
 app.get('/', (req, res) => {
     res.send('API is running...');
