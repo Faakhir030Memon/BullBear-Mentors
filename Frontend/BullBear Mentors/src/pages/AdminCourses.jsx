@@ -45,7 +45,7 @@ const AdminCourses = () => {
             await axios.post('/api/courses', formData, config);
             setIsAdding(false);
             setFormData({
-                title: '', description: '', image: '',
+                title: '', description: '', image: '', category: 'Premium',
                 prices: { oneMonth: 30000, sixMonth: 153000, twelveMonth: 270000 }
             });
             fetchCourses();
@@ -97,13 +97,26 @@ const AdminCourses = () => {
                                 required
                             ></textarea>
                         </div>
-                        <div className="form-group">
-                            <label>Image URL</label>
-                            <input 
-                                type="text" 
-                                value={formData.image} 
-                                onChange={(e) => setFormData({...formData, image: e.target.value})}
-                            />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Image URL</label>
+                                <input 
+                                    type="text" 
+                                    value={formData.image} 
+                                    onChange={(e) => setFormData({...formData, image: e.target.value})}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Category</label>
+                                <select 
+                                    value={formData.category}
+                                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                                    style={{width: '100%', padding: '10px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius)'}}
+                                >
+                                    <option value="Normal">Normal Course</option>
+                                    <option value="Premium">Premium Course</option>
+                                </select>
+                            </div>
                         </div>
                         <div className="form-row">
                             <div className="form-group">

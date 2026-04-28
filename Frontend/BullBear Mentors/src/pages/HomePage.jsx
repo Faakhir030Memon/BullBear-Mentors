@@ -107,7 +107,7 @@ const HomePage = () => {
                             <div key={course._id} className="course-card card">
                                 <div className="course-img" style={{backgroundImage: `url(${course.image.startsWith('http') ? course.image : `/uploads/${course.image}`})`, backgroundSize: 'cover'}}></div>
                                 <div className="course-info">
-                                    <span className="course-tag">{course.level || 'Premium'}</span>
+                                    <span className="course-tag">{course.category || 'Premium'}</span>
                                     <h3>{course.title}</h3>
                                     <p>{course.description.substring(0, 80)}...</p>
                                     <div className="course-footer">
