@@ -134,7 +134,7 @@ const ProfilePage = () => {
                     <div className="stats-list card">
                         <div className="stat-item">
                             <Book size={20} />
-                            <span>My Courses: 0</span>
+                            <span>My Courses: {purchases.length}</span>
                         </div>
                         <div className="stat-item">
                             <Calendar size={20} />
@@ -143,14 +143,52 @@ const ProfilePage = () => {
                     </div>
                 </div>
 
-                {/* Profile Settings */}
+                {/* Profile Settings & Content */}
                 <div className="profile-main">
                     <div className="card">
-                        <h2>Profile Settings</h2>
-                        <p className="subtitle">Update your personal information and security settings</p>
                         
+                        {/* My Courses Section */}
+                        <div className="courses-section mb-5">
+                            <h3>My Enrolled Courses & Materials</h3>
+                            {loadingCerts ? <Loader className="animate-spin text-success" /> : (
+                                <div className="certs-list-mini">
+                                    {purchases.length === 0 ? (
+                                        <p className="text-muted">You have not enrolled in any courses yet.</p>
+                                    ) : (
+                                        purchases.map(p => (
+                                            <div key={p._id} className="course-item-mini" style={{border: '1px solid #eee', padding: '15px', borderRadius: '8px', marginBottom: '15px'}}>
+                                                <div style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
+                                                    <Book size={24} className="text-primary" style={{marginRight: '15px'}} />
+                                                    <div>
+                                                        <h4 style={{margin: 0}}>{p.course?.title || 'Unknown Course'}</h4>
+                                                        <span style={{fontSize: '12px', color: '#666'}}>Enrolled on: {new Date(p.createdAt).toLocaleDateString()}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                {p.course?.content && p.course.content.length > 0 ? (
+                                                    <div className="course-materials" style={{marginTop: '15px', paddingLeft: '40px'}}>
+                                                        <h5 style={{fontSize: '14px', marginBottom: '10px'}}>Course Materials:</h5>
+                                                        {p.course.content.map((item, i) => (
+                                                            <div key={i} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', background: '#f8f9fa', borderRadius: '4px', marginBottom: '5px'}}>
+                                                                <span style={{fontSize: '13px'}}>{item.title} - <small>{item.fileType?.includes('video') ? 'Video' : 'Document'}</small></span>
+                                                                <a href={item.fileUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-primary" style={{fontSize: '11px', padding: '4px 8px'}}>
+                                                                    <Download size={12} style={{marginRight: '4px'}} /> Download / View
+                                                                </a>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <p style={{fontSize: '13px', color: '#999', paddingLeft: '40px'}}>Materials are being uploaded by the instructor.</p>
+                                                )}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         {/* Certificates Section */}
-                        <div className="certs-section mb-5">
+                        <div className="certs-section mb-5" style={{borderTop: '1px solid #eee', paddingTop: '30px'}}>
                             <h3>My Certificates</h3>
                             {loadingCerts ? <Loader className="animate-spin text-success" /> : (
                                 <div className="certs-list-mini">
