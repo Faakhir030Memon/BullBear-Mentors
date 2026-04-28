@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { User, Lock, Calendar, Book, Shield, AlertCircle, CheckCircle, Camera, Award, Download, Eye, Loader } from 'lucide-react';
 import axios from 'axios';
