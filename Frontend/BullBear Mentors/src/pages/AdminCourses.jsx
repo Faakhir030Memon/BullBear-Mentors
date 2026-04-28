@@ -39,10 +39,29 @@ const AdminCourses = () => {
         fetchCourses();
     }, []);
 
+    const handleEdit = (course) => {
+        setFormData({
+            _id: course._id,
+            title: course.title,
+            description: course.description,
+            image: course.image,
+            category: course.category || 'Premium',
+            prices: course.prices,
+            content: course.content || [],
+            isActive: course.isActive
+        });
+        setIsAdding(true);
+        window.scrollTo(0, 0);
+    };
+
     const handleAddCourse = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/courses', formData, config);
+            if (formData._id) {
+                await axios.put(`/api/courses/${formData._id}`, formData, config);
+            } else {
+                await axios.post('/api/courses', formData, config);
+            }
             setIsAdding(false);
             setFormData({
                 title: '', description: '', image: '', category: 'Premium',
@@ -50,7 +69,7 @@ const AdminCourses = () => {
             });
             fetchCourses();
         } catch (err) {
-            alert('Failed to add course');
+            alert('Failed to save course');
         }
     };
 
@@ -71,14 +90,22 @@ const AdminCourses = () => {
         <div className="admin-courses fade-in">
             <div className="admin-header">
                 <h2>Manage Courses</h2>
-                <button className="btn btn-primary" onClick={() => setIsAdding(!isAdding)}>
+                <button className="btn btn-primary" onClick={() => {
+                    setIsAdding(!isAdding);
+                    if (!isAdding) {
+                        setFormData({
+                            title: '', description: '', image: '', category: 'Premium',
+                            prices: { oneMonth: 30000, sixMonth: 153000, twelveMonth: 270000 }
+                        });
+                    }
+                }}>
                     {isAdding ? <><X size={18} /> Cancel</> : <><Plus size={18} /> Add New Course</>}
                 </button>
             </div>
 
             {isAdding && (
                 <div className="add-course-form card mb-4">
-                    <h3>Add New Course</h3>
+                    <h3>{formData._id ? 'Edit Course' : 'Add New Course'}</h3>
                     <form onSubmit={handleAddCourse}>
                         <div className="form-group">
                             <label>Title</label>
