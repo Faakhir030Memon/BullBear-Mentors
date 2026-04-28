@@ -103,26 +103,20 @@ const HomePage = () => {
                         <Link to="/courses" className="text-success">View All Courses <ChevronRight size={18} /></Link>
                     </div>
                     <div className="course-grid">
-                        {courses.length > 0 ? courses.map(course => (
-                            <div key={course._id} className="course-card card">
-                                <div className="course-img" style={{backgroundImage: `url(${course.image.startsWith('http') ? course.image : `/uploads/${course.image}`})`, backgroundSize: 'cover'}}></div>
+                        {[1, 2, 3].map(i => (
+                            <div key={`premium-soon-${i}`} className="course-card card">
+                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`, backgroundSize: 'cover'}}></div>
                                 <div className="course-info">
-                                    <span className="course-tag">{course.category || 'Premium'}</span>
-                                    <h3>{course.title}</h3>
-                                    <p>{course.description.substring(0, 80)}...</p>
+                                    <span className="course-tag" style={{background: 'var(--primary)', color: 'white'}}>Premium</span>
+                                    <h3>Advanced Masterclass {i}</h3>
+                                    <p>Exclusive premium strategies to master institutional trading and secure your financial independence.</p>
                                     <div className="course-footer">
-                                        <span className="price">{course.prices?.oneMonth?.toLocaleString()} PKR</span>
-                                        {course.category === 'Premium' && (!course.content || course.content.length === 0) ? (
-                                            <button disabled className="btn btn-secondary btn-sm" style={{opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#6c757d', color: 'white'}}>Coming Soon</button>
-                                        ) : (
-                                            <Link to={`/courses/${course._id}`} className="btn btn-primary btn-sm">Apply Now</Link>
-                                        )}
+                                        <span className="price">TBD</span>
+                                        <button disabled className="btn btn-secondary btn-sm" style={{opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#6c757d', color: 'white'}}>Coming Soon</button>
                                     </div>
                                 </div>
                             </div>
-                        )) : (
-                            <p>Loading premium courses...</p>
-                        )}
+                        ))}
                     </div>
                 </div>
             </section>
