@@ -10,9 +10,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
+import CoursesPage from './pages/CoursesPage';
 
 // Placeholder components for other pages
-const CoursesPage = () => <div className="container py-5"><h1>Courses Coming Soon</h1></div>;
 const AboutPage = () => <div className="container py-5"><h1>About BullBear Mentors Coming Soon</h1></div>;
 const AdminDashboard = () => <div className="container py-5"><h1>Admin Dashboard Coming Soon</h1></div>;
 
