@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage';
 import CoursesPage from './pages/CoursesPage';
 import CourseDetailsPage from './pages/CourseDetailsPage';
 import AboutPage from './pages/AboutPage';
+import MyLearningPage from './pages/MyLearningPage';
 import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
