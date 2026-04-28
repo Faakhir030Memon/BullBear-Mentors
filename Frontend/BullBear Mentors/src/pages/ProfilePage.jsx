@@ -16,15 +16,19 @@ const ProfilePage = () => {
     const [validationError, setValidationError] = useState('');
     const [uploading, setUploading] = useState(false);
     const [certificates, setCertificates] = useState([]);
+    const [purchases, setPurchases] = useState([]);
     const [loadingCerts, setLoadingCerts] = useState(true);
     const [selectedCert, setSelectedCert] = useState(null);
 
-    const fetchCertificates = async () => {
+    const fetchData = async () => {
         try {
-            const { data } = await axios.get('/api/certificates/my', {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
-            setCertificates(data);
+            const certReq = axios.get('/api/certificates/my', { headers: { Authorization: `Bearer ${user.token}` } });
+            const purReq = axios.get('/api/purchase/my', { headers: { Authorization: `Bearer ${user.token}` } });
+            
+            const [certRes, purRes] = await Promise.all([certReq, purReq]);
+            
+            setCertificates(certRes.data);
+            setPurchases(purRes.data.filter(p => p.status === 'active'));
             setLoadingCerts(false);
         } catch (err) {
             console.error(err);
@@ -32,8 +36,8 @@ const ProfilePage = () => {
         }
     };
 
-    useState(() => {
-        if (user) fetchCertificates();
+    useEffect(() => {
+        if (user) fetchData();
     }, [user]);
 
     const handleFileUpload = async (e) => {
