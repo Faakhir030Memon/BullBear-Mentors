@@ -14,14 +14,19 @@ const storage = multer.diskStorage({
 });
 
 function checkFileType(file, cb) {
-    const filetypes = /jpg|jpeg|png/;
+    const filetypes = /jpg|jpeg|png|pdf|doc|docx|mp4|mkv|avi|webm/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+    
+    // Some mime types for docx are application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    const mimetype = file.mimetype.startsWith('image/') || 
+                     file.mimetype.startsWith('video/') ||
+                     file.mimetype === 'application/pdf' ||
+                     file.mimetype.includes('word');
 
     if (extname && mimetype) {
         return cb(null, true);
     } else {
-        cb('Images only!');
+        cb('Error: Invalid file type! Only Images, PDFs, Word docs, and Videos are allowed.');
     }
 }
 
