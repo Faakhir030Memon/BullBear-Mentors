@@ -8,16 +8,19 @@ const HomePage = () => {
     const { user } = useAuth();
     const [recentCerts, setRecentCerts] = useState([]);
     const [stories, setStories] = useState([]);
+    const [courses, setCourses] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [storyRes, certRes] = await Promise.all([
+                const [storyRes, certRes, courseRes] = await Promise.all([
                     axios.get('/api/stories'),
-                    axios.get('/api/certificates') // Assuming this is public or we need a public endpoint
+                    axios.get('/api/certificates'), // Assuming this is public or we need a public endpoint
+                    axios.get('/api/courses')
                 ]);
                 setStories(storyRes.data.filter(s => s.type === 'story').slice(0, 3));
                 setRecentCerts(certRes.data.slice(0, 4));
+                setCourses(courseRes.data.slice(0, 3));
             } catch (err) {
                 console.error('Failed to fetch home data');
             }
@@ -100,20 +103,22 @@ const HomePage = () => {
                         <Link to="/courses" className="text-success">View All Courses <ChevronRight size={18} /></Link>
                     </div>
                     <div className="course-grid">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="course-card card">
-                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`, backgroundSize: 'cover'}}></div>
+                        {courses.length > 0 ? courses.map(course => (
+                            <div key={course._id} className="course-card card">
+                                <div className="course-img" style={{backgroundImage: `url(${course.image.startsWith('http') ? course.image : `/uploads/${course.image}`})`, backgroundSize: 'cover'}}></div>
                                 <div className="course-info">
-                                    <span className="course-tag">Bestseller</span>
-                                    <h3>Advanced SMC {i}</h3>
-                                    <p>Master Smart Money Concepts and trade alongside central banks with precision.</p>
+                                    <span className="course-tag">{course.level || 'Premium'}</span>
+                                    <h3>{course.title}</h3>
+                                    <p>{course.description.substring(0, 80)}...</p>
                                     <div className="course-footer">
-                                        <span className="price">45,000 PKR</span>
-                                        <Link to={`/courses/${i}`} className="btn btn-primary btn-sm">Join Now</Link>
+                                        <span className="price">{course.price} PKR</span>
+                                        <Link to={`/courses/${course._id}`} className="btn btn-primary btn-sm">Join Now</Link>
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        )) : (
+                            <p>Loading premium courses...</p>
+                        )}
                     </div>
                 </div>
             </section>
