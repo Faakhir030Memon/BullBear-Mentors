@@ -156,30 +156,56 @@ const ProfilePage = () => {
                                         <p className="text-muted">You have not enrolled in any courses yet.</p>
                                     ) : (
                                         purchases.map(p => (
-                                            <div key={p._id} className="course-item-mini" style={{border: '1px solid #eee', padding: '15px', borderRadius: '8px', marginBottom: '15px'}}>
-                                                <div style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
-                                                    <Book size={24} className="text-primary" style={{marginRight: '15px'}} />
-                                                    <div>
-                                                        <h4 style={{margin: 0}}>{p.course?.title || 'Unknown Course'}</h4>
-                                                        <span style={{fontSize: '12px', color: '#666'}}>Enrolled on: {new Date(p.createdAt).toLocaleDateString()}</span>
+                                            <div key={p._id} style={{border: '1px solid var(--border-color, #eee)', borderRadius: '10px', marginBottom: '16px', overflow: 'hidden'}}>
+                                                {/* Course Header */}
+                                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: 'var(--bg-secondary, #f8f9fa)', borderBottom: '1px solid #eee'}}>
+                                                    <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                                        <div style={{background: 'var(--primary, #16a34a)', borderRadius: '8px', padding: '8px', display: 'flex'}}>
+                                                            <Book size={18} color="white" />
+                                                        </div>
+                                                        <div>
+                                                            <h4 style={{margin: 0, fontSize: '15px', fontWeight: 700}}>{p.course?.title || 'Unknown Course'}</h4>
+                                                            <span style={{fontSize: '11px', color: '#888'}}>Enrolled: {new Date(p.createdAt).toLocaleDateString()}</span>
+                                                        </div>
                                                     </div>
+                                                    {p.course?.content && p.course.content.length > 0 && (
+                                                        <a
+                                                            href={p.course.content[0].fileUrl}
+                                                            download
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            style={{display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--primary, #16a34a)', color: 'white', padding: '7px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none'}}
+                                                        >
+                                                            <Download size={13} /> Download All
+                                                        </a>
+                                                    )}
                                                 </div>
-                                                
-                                                {p.course?.content && p.course.content.length > 0 ? (
-                                                    <div className="course-materials" style={{marginTop: '15px', paddingLeft: '40px'}}>
-                                                        <h5 style={{fontSize: '14px', marginBottom: '10px'}}>Course Materials:</h5>
-                                                        {p.course.content.map((item, i) => (
-                                                            <div key={i} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', background: '#f8f9fa', borderRadius: '4px', marginBottom: '5px'}}>
-                                                                <span style={{fontSize: '13px'}}>{item.title} - <small>{item.fileType?.includes('video') ? 'Video' : 'Document'}</small></span>
-                                                                <a href={item.fileUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-primary" style={{fontSize: '11px', padding: '4px 8px'}}>
-                                                                    <Download size={12} style={{marginRight: '4px'}} /> Download / View
+                                                {/* Materials List */}
+                                                <div style={{padding: '12px 18px'}}>
+                                                    {p.course?.content && p.course.content.length > 0 ? (
+                                                        p.course.content.map((item, i) => (
+                                                            <div key={i} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 12px', background: '#fff', borderRadius: '6px', marginBottom: '6px', border: '1px solid #f0f0f0'}}>
+                                                                <span style={{fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                                    <span style={{background: '#e8f5e9', color: '#16a34a', borderRadius: '4px', padding: '2px 7px', fontSize: '11px', fontWeight: 700}}>
+                                                                        {item.fileType?.includes('video') ? '🎬 Video' : item.fileType?.includes('pdf') ? '📄 PDF' : '📁 File'}
+                                                                    </span>
+                                                                    {item.title}
+                                                                </span>
+                                                                <a
+                                                                    href={item.fileUrl}
+                                                                    download
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    style={{display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary, #16a34a)', fontSize: '12px', fontWeight: 600, textDecoration: 'none', padding: '5px 10px', border: '1px solid var(--primary, #16a34a)', borderRadius: '5px'}}
+                                                                >
+                                                                    <Download size={12} /> Download
                                                                 </a>
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <p style={{fontSize: '13px', color: '#999', paddingLeft: '40px'}}>Materials are being uploaded by the instructor.</p>
-                                                )}
+                                                        ))
+                                                    ) : (
+                                                        <p style={{fontSize: '13px', color: '#aaa', margin: '6px 0'}}>Materials are being prepared by the instructor.</p>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))
                                     )}
