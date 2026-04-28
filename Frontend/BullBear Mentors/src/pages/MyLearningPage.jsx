@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Book, Clock, AlertCircle, PlayCircle, Loader } from 'lucide-react';
+import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const MyLearningPage = () => {
@@ -30,6 +30,7 @@ const MyLearningPage = () => {
 
     const activePurchases = purchases.filter(p => p.status === 'active' && new Date(p.expiryDate) > new Date());
     const pendingPurchases = purchases.filter(p => p.status === 'pending');
+    const approvedPurchases = purchases.filter(p => p.status === 'approved');
 
     return (
         <div className="my-learning container py-5 fade-in">
@@ -58,6 +59,18 @@ const MyLearningPage = () => {
                                         Start Learning <PlayCircle size={18} />
                                     </Link>
                                 </div>
+                                {p.course?.materials?.length > 0 && (
+                                    <div className="course-materials mt-3">
+                                        <strong>Course Materials:</strong>
+                                        <div className="material-list mt-2">
+                                            {p.course.materials.map((m, i) => (
+                                                <a key={i} href={m.url} download className="material-link">
+                                                    <Download size={14} /> {m.title}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ))
                     ) : (
@@ -69,7 +82,7 @@ const MyLearningPage = () => {
                     )}
                 </div>
 
-                {/* Pending & Stats */}
+                {/* Pending, Approved & Stats */}
                 <aside className="learning-sidebar">
                     <div className="pending-section card mb-4">
                         <h3>Pending Verifications</h3>
@@ -85,6 +98,24 @@ const MyLearningPage = () => {
                             ))
                         ) : (
                             <p className="no-pending">No pending verifications.</p>
+                        )}
+                    </div>
+
+                    <div className="approved-section card mb-4">
+                        <h3>Approved Downloads</h3>
+                        {approvedPurchases.length > 0 ? (
+                            approvedPurchases.map(p => (
+                                <div key={p._id} className="pending-item">
+                                    <div className="pending-info">
+                                        <strong>{p.course?.title}</strong>
+                                    </div>
+                                    <a href={p.downloadUrl} className="btn btn-sm btn-outline-success">
+                                        <Download size={14} />
+                                    </a>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="no-pending">No approved downloads available.</p>
                         )}
                     </div>
 
@@ -109,8 +140,11 @@ const MyLearningPage = () => {
                 .course-info { flex-grow: 1; }
                 .course-info h3 { font-size: 18px; margin-bottom: 4px; }
                 .expiry-info { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+                .course-materials { border-top: 1px solid var(--border-color); padding-top: 15px; }
+                .material-list { display: flex; gap: 10px; flex-wrap: wrap; }
+                .material-link { font-size: 12px; display: flex; align-items: center; gap: 5px; color: var(--primary); text-decoration: none; background: #f0f7ff; padding: 5px 10px; border-radius: 4px; }
                 .empty-state { text-align: center; padding: 60px; }
-                .pending-section h3 { font-size: 16px; margin-bottom: 20px; }
+                .pending-section h3, .approved-section h3 { font-size: 16px; margin-bottom: 20px; }
                 .pending-item { 
                     display: flex; justify-content: space-between; align-items: center; 
                     padding: 12px 0; border-bottom: 1px solid var(--border-color);
@@ -125,6 +159,7 @@ const MyLearningPage = () => {
                 .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
                 .mb-3 { margin-bottom: 1rem; }
                 .mb-4 { margin-bottom: 1.5rem; }
+                .mt-2 { margin-top: 0.5rem; }
                 .mt-3 { margin-top: 1rem; }
                 @media (max-width: 992px) {
                     .learning-grid { grid-template-columns: 1fr; }
