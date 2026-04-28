@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { TrendingUp, Award, Users, BookOpen, ChevronRight } from 'lucide-react';
+import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
@@ -81,10 +81,9 @@ const HomePage = () => {
                         <Link to="/courses" className="text-success">View All Courses <ChevronRight size={18} /></Link>
                     </div>
                     <div className="course-grid">
-                        {/* Placeholder Course Cards - In real app these would be fetched */}
                         {[1, 2, 3].map(i => (
                             <div key={i} className="course-card card">
-                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`}}></div>
+                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`, backgroundSize: 'cover'}}></div>
                                 <div className="course-info">
                                     <span className="course-tag">Bestseller</span>
                                     <h3>Advanced SMC {i}</h3>
@@ -155,6 +154,34 @@ const HomePage = () => {
                 </div>
             </section>
 
+            <style>{`
+                .home-page { padding-bottom: 80px; }
+                .hero { padding: 80px 0; background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%); }
+                .hero-content { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+                .badge { display: inline-block; padding: 6px 12px; background-color: rgba(0, 200, 5, 0.1); color: var(--success); border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+                .hero-text h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+                .hero-text h1 span { color: var(--success); }
+                .hero-text p { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 500px; }
+                .hero-btns { display: flex; gap: 16px; }
+                .btn-outline { border: 1px solid var(--border-color); background: white; }
+                .hero-stats { display: flex; flex-direction: column; gap: 20px; }
+                .stat-card { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 20px; border-left: 4px solid var(--success); }
+                .stat-card h3 { font-size: 24px; margin-bottom: 4px; }
+                .stat-card p { font-size: 14px; color: var(--text-secondary); }
+                .section-header { display: flex; justify-content: space-between; align-items: center; margin: 80px 0 32px; }
+                .section-header h2 { font-size: 32px; font-weight: 700; }
+                .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+                .course-card { padding: 0; overflow: hidden; transition: var(--transition); }
+                .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+                .course-img { height: 200px; background-color: #eee; }
+                .course-info { padding: 24px; }
+                .course-tag { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; display: block; }
+                .course-info h3 { margin-bottom: 12px; }
+                .course-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+                .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border-color); }
+                .price { font-size: 20px; font-weight: 700; color: var(--primary); }
+                .btn-sm { padding: 8px 16px; font-size: 14px; }
+
                 .bg-light { background-color: #f8f9fa; }
                 .bg-dark { background-color: #111; color: white; }
                 .py-5 { padding: 80px 0; }
@@ -162,130 +189,34 @@ const HomePage = () => {
                 .font-bold { font-weight: 700; }
 
                 /* Overview Styles */
-                .overview-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 60px;
-                    align-items: center;
-                }
-                .overview-image img {
-                    width: 100%;
-                    border-radius: var(--radius);
-                    box-shadow: var(--shadow-lg);
-                }
-                .overview-text h2 {
-                    font-size: 40px;
-                    margin-bottom: 24px;
-                }
-                .features-list {
-                    list-style: none;
-                    margin: 32px 0;
-                }
-                .features-list li {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    margin-bottom: 16px;
-                    font-weight: 500;
-                }
+                .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+                .overview-image img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+                .overview-text h2 { font-size: 40px; margin-bottom: 24px; }
+                .features-list { list-style: none; margin: 32px 0; }
+                .features-list li { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-weight: 500; }
 
                 /* Success Stories Styles */
-                .stories-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                    gap: 30px;
-                }
-                .story-card {
-                    padding: 30px;
-                }
-                .story-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 15px;
-                    margin-bottom: 20px;
-                }
-                .story-avatar {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
-                .story-card p {
-                    font-style: italic;
-                    color: var(--text-secondary);
-                    margin-bottom: 20px;
-                    line-height: 1.6;
-                }
+                .stories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+                .story-card { padding: 30px; }
+                .story-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+                .story-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+                .story-card p { font-style: italic; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
 
                 /* Certificate Styles */
-                .cert-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 60px;
-                    align-items: center;
-                }
-                .cert-text h2 {
-                    font-size: 40px;
-                    margin-bottom: 24px;
-                }
-                .cert-text p {
-                    font-size: 18px;
-                    opacity: 0.8;
-                    margin-bottom: 32px;
-                }
-                .dummy-cert {
-                    background: white;
-                    color: #333;
-                    padding: 40px;
-                    border-radius: 4px;
-                    border: 15px solid #111;
-                    outline: 2px solid #c9a050;
-                    outline-offset: -10px;
-                    text-align: center;
-                    position: relative;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-                }
-                .cert-icon {
-                    color: #c9a050;
-                    margin-bottom: 20px;
-                }
-                .cert-name {
-                    font-size: 28px;
-                    font-family: 'Serif', serif;
-                    font-weight: 700;
-                    border-bottom: 2px solid #333;
-                    display: inline-block;
-                    margin: 20px 0;
-                    padding: 0 20px;
-                }
-                .cert-footer {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 40px;
-                    font-size: 12px;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
+                .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+                .cert-text h2 { font-size: 40px; margin-bottom: 24px; }
+                .cert-text p { font-size: 18px; opacity: 0.8; margin-bottom: 32px; }
+                .dummy-cert { background: white; color: #333; padding: 40px; border-radius: 4px; border: 15px solid #111; outline: 2px solid #c9a050; outline-offset: -10px; text-align: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+                .cert-icon { color: #c9a050; margin-bottom: 20px; }
+                .cert-name { font-size: 28px; font-family: 'Serif', serif; font-weight: 700; border-bottom: 2px solid #333; display: inline-block; margin: 20px 0; padding: 0 20px; }
+                .cert-footer { display: flex; justify-content: space-between; margin-top: 40px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
                 @media (max-width: 1024px) {
-                    .hero-content, .overview-grid, .cert-grid {
-                        grid-template-columns: 1fr;
-                        text-align: center;
-                    }
-                    .hero-text p, .cert-text p {
-                        margin: 0 auto 32px;
-                    }
-                    .hero-btns {
-                        justify-content: center;
-                    }
-                    .hero-stats {
-                        flex-direction: row;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                    }
-                    .features-list li {
-                        justify-content: center;
-                    }
+                    .hero-content, .overview-grid, .cert-grid { grid-template-columns: 1fr; text-align: center; }
+                    .hero-text p, .cert-text p { margin: 0 auto 32px; }
+                    .hero-btns { justify-content: center; }
+                    .hero-stats { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+                    .features-list li { justify-content: center; }
                 }
             `}</style>
         </div>
