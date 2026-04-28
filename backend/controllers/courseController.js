@@ -25,7 +25,7 @@ const getCourseById = async (req, res) => {
 // @route   POST /api/courses
 // @access  Private/Admin
 const createCourse = async (req, res) => {
-    const { title, description, image, prices, content } = req.body;
+    const { title, description, image, prices, content, category } = req.body;
 
     const course = new Course({
         title,
@@ -33,6 +33,7 @@ const createCourse = async (req, res) => {
         image,
         prices,
         content,
+        category: category || 'Premium'
     });
 
     const createdCourse = await course.save();
@@ -43,7 +44,7 @@ const createCourse = async (req, res) => {
 // @route   PUT /api/courses/:id
 // @access  Private/Admin
 const updateCourse = async (req, res) => {
-    const { title, description, image, prices, content, isActive } = req.body;
+    const { title, description, image, prices, content, isActive, category } = req.body;
 
     const course = await Course.findById(req.params.id);
 
@@ -53,6 +54,7 @@ const updateCourse = async (req, res) => {
         course.image = image || course.image;
         course.prices = prices || course.prices;
         course.content = content || course.content;
+        course.category = category || course.category;
         course.isActive = isActive !== undefined ? isActive : course.isActive;
 
         const updatedCourse = await course.save();

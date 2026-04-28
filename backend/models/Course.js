@@ -9,6 +9,7 @@ const courseSchema = mongoose.Schema({
         sixMonth: { type: Number, default: 153000 }, // 180k - 15%
         twelveMonth: { type: Number, default: 270000 } // 360k - 25%
     },
+    category: { type: String, enum: ['Normal', 'Premium'], default: 'Premium' },
     content: [{
         title: String,
         description: String,
