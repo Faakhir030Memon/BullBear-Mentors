@@ -75,6 +75,9 @@ const getUserProfile = async (req, res) => {
             lastName: user.lastName,
             email: user.email,
             role: user.role,
+            profilePicture: user.profilePicture,
+            profilePicStatus: user.profilePicStatus,
+            createdAt: user.createdAt
         });
     } else {
         res.status(404).json({ message: 'User not found' });
@@ -102,7 +105,28 @@ const updateUserProfile = async (req, res) => {
             lastName: updatedUser.lastName,
             email: updatedUser.email,
             role: updatedUser.role,
+            profilePicture: updatedUser.profilePicture,
+            profilePicStatus: updatedUser.profilePicStatus,
             token: generateToken(updatedUser._id),
+        });
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+};
+
+// @desc    Upload profile picture
+// @route   POST /api/auth/profile/pic
+// @access  Private
+const uploadProfilePicture = async (req, res) => {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        user.profilePicture = `/${req.file.path.replace(/\\/g, '/')}`;
+        user.profilePicStatus = 'pending'; // Requires admin approval
+        await user.save();
+        res.json({
+            message: 'Picture uploaded, pending approval',
+            profilePicture: user.profilePicture
         });
     } else {
         res.status(404).json({ message: 'User not found' });
@@ -114,4 +138,5 @@ module.exports = {
     authUser,
     getUserProfile,
     updateUserProfile,
+    uploadProfilePicture,
 };
