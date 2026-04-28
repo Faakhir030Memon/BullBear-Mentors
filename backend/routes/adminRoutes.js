@@ -4,6 +4,8 @@ const {
     getUsers,
     blockUser,
     deleteUser,
+    updatePicStatus,
+    setAdminPic,
     getStats,
 } = require('../controllers/adminController');
 const { protect, admin } = require('../middleware/authMiddleware');
@@ -11,6 +13,8 @@ const { protect, admin } = require('../middleware/authMiddleware');
 router.get('/stats', protect, admin, getStats);
 router.get('/users', protect, admin, getUsers);
 router.put('/users/:id/block', protect, admin, blockUser);
+router.put('/users/:id/pic-status', protect, admin, updatePicStatus);
 router.delete('/users/:id', protect, admin, deleteUser);
+router.put('/set-pic', protect, admin, setAdminPic);
 
 module.exports = router;
