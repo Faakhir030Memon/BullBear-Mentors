@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { User, Lock, Calendar, Book, Shield, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, Lock, Calendar, Book, Shield, AlertCircle, CheckCircle, Camera, Award, Download, Eye, Loader } from 'lucide-react';
+import axios from 'axios';
+import CertificateTemplate from '../components/CertificateTemplate';
 
 const ProfilePage = () => {
     const { user, updateProfile, loading, error } = useAuth();
@@ -12,6 +14,56 @@ const ProfilePage = () => {
     });
     const [successMessage, setSuccessMessage] = useState('');
     const [validationError, setValidationError] = useState('');
+    const [uploading, setUploading] = useState(false);
+    const [certificates, setCertificates] = useState([]);
+    const [loadingCerts, setLoadingCerts] = useState(true);
+    const [selectedCert, setSelectedCert] = useState(null);
+
+    const fetchCertificates = async () => {
+        try {
+            const { data } = await axios.get('/api/certificates/my', {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+            setCertificates(data);
+            setLoadingCerts(false);
+        } catch (err) {
+            console.error(err);
+            setLoadingCerts(false);
+        }
+    };
+
+    useState(() => {
+        if (user) fetchCertificates();
+    }, [user]);
+
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        setUploading(true);
+        try {
+            const { data } = await axios.post('/api/auth/profile/pic', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${user.token}`
+                }
+            });
+            setSuccessMessage(data.message);
+            // In a real app, we'd update the local user context here
+            // user.profilePicture = data.profilePicture;
+            setUploading(false);
+        } catch (err) {
+            setValidationError('Failed to upload image');
+            setUploading(false);
+        }
+    };
+
+    const handlePrint = () => {
+        window.print();
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -47,14 +99,31 @@ const ProfilePage = () => {
                 {/* Profile Sidebar */}
                 <div className="profile-sidebar">
                     <div className="user-card card">
-                        <div className="avatar">
-                            {user?.firstName?.[0]}{user?.lastName?.[0]}
+                        <div className="avatar-container">
+                            <div className="avatar">
+                                {user?.profilePicture ? (
+                                    <img src={user.profilePicture} alt="Avatar" />
+                                ) : (
+                                    <span>{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+                                )}
+                            </div>
+                            <label htmlFor="pic-upload" className="upload-btn">
+                                {uploading ? <Loader className="animate-spin" size={16} /> : <Camera size={16} />}
+                            </label>
+                            <input type="file" id="pic-upload" hidden onChange={handleFileUpload} accept="image/*" />
                         </div>
                         <h3>{user?.firstName} {user?.lastName}</h3>
                         <p>{user?.email}</p>
-                        <div className="user-badge">
-                            {user?.role === 'admin' ? <Shield size={14} /> : <User size={14} />}
-                            {user?.role?.toUpperCase()}
+                        <div className="user-status-badges">
+                            <div className="user-badge">
+                                {user?.role === 'admin' ? <Shield size={14} /> : <User size={14} />}
+                                {user?.role?.toUpperCase()}
+                            </div>
+                            {user?.profilePicStatus && (
+                                <div className={`pic-status ${user.profilePicStatus}`}>
+                                    {user.profilePicStatus === 'pending' ? 'Pic Pending' : user.profilePicStatus === 'approved' ? 'Pic Approved' : 'Pic Rejected'}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -75,6 +144,52 @@ const ProfilePage = () => {
                     <div className="card">
                         <h2>Profile Settings</h2>
                         <p className="subtitle">Update your personal information and security settings</p>
+                        
+                        {/* Certificates Section */}
+                        <div className="certs-section mb-5">
+                            <h3>My Certificates</h3>
+                            {loadingCerts ? <Loader className="animate-spin text-success" /> : (
+                                <div className="certs-list-mini">
+                                    {certificates.length === 0 ? (
+                                        <p className="text-muted">No certificates issued yet.</p>
+                                    ) : (
+                                        certificates.map(c => (
+                                            <div key={c._id} className="cert-item-mini">
+                                                <div className="cert-icon-mini"><Award size={24} /></div>
+                                                <div className="cert-info-mini">
+                                                    <h4>{c.courseTitle}</h4>
+                                                    <span>Issued: {new Date(c.completionDate).toLocaleDateString()}</span>
+                                                </div>
+                                                <div className="cert-actions-mini">
+                                                    <button className="btn btn-outline btn-sm" onClick={() => setSelectedCert(c)}>
+                                                        <Eye size={16} /> View
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {selectedCert && (
+                            <div className="modal-overlay" onClick={() => setSelectedCert(null)}>
+                                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                    <div className="modal-header">
+                                        <h3>Certificate Preview</h3>
+                                        <div className="modal-btns">
+                                            <button className="btn btn-primary btn-sm" onClick={handlePrint}>
+                                                <Download size={16} /> Download / Print
+                                            </button>
+                                            <button className="close-btn" onClick={() => setSelectedCert(null)}>&times;</button>
+                                        </div>
+                                    </div>
+                                    <div className="modal-body">
+                                        <CertificateTemplate cert={selectedCert} />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {successMessage && (
                             <div className="alert alert-success">
