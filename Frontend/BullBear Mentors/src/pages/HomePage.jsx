@@ -50,29 +50,107 @@ const HomePage = () => {
                 </div>
             </section>
 
+            {/* Overview Section */}
+            <section className="overview py-5">
+                <div className="container">
+                    <div className="overview-grid">
+                        <div className="overview-image">
+                            <img src="https://images.unsplash.com/photo-1611974714851-48206139d733?auto=format&fit=crop&q=80&w=800" alt="Trading Analysis" />
+                        </div>
+                        <div className="overview-text">
+                            <div className="badge">Why BullBear Mentors?</div>
+                            <h2>Your Gateway to <span>Financial Independence</span></h2>
+                            <p>BullBear Mentors is more than just a course. It's a comprehensive ecosystem designed to take you from a beginner to a professional trader. We focus on high-probability institutional trading methods that the big players use.</p>
+                            <ul className="features-list">
+                                <li><CheckCircle className="text-success" size={20} /> Live Market Analysis & Signals</li>
+                                <li><CheckCircle className="text-success" size={20} /> Mentorship from Professional Traders</li>
+                                <li><CheckCircle className="text-success" size={20} /> Proprietary Trading Strategies</li>
+                                <li><CheckCircle className="text-success" size={20} /> Lifetime Community Access</li>
+                            </ul>
+                            <Link to="/about" className="btn btn-primary">Learn More About Us</Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Featured Courses Section */}
-            <section className="featured">
+            <section className="featured bg-light py-5">
                 <div className="container">
                     <div className="section-header">
-                        <h2>Featured Courses</h2>
-                        <Link to="/courses" className="text-success">View All <ChevronRight size={18} /></Link>
+                        <h2>Our Premium Courses</h2>
+                        <Link to="/courses" className="text-success">View All Courses <ChevronRight size={18} /></Link>
                     </div>
                     <div className="course-grid">
-                        {/* Placeholder Course Cards */}
+                        {/* Placeholder Course Cards - In real app these would be fetched */}
                         {[1, 2, 3].map(i => (
                             <div key={i} className="course-card card">
-                                <div className="course-img"></div>
+                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`}}></div>
                                 <div className="course-info">
-                                    <span className="course-tag">Beginner</span>
-                                    <h3>Advanced Price Action {i}</h3>
-                                    <p>Master the art of reading charts without indicators using institutional methods.</p>
+                                    <span className="course-tag">Bestseller</span>
+                                    <h3>Advanced SMC {i}</h3>
+                                    <p>Master Smart Money Concepts and trade alongside central banks with precision.</p>
                                     <div className="course-footer">
-                                        <span className="price">30,000 PKR</span>
+                                        <span className="price">45,000 PKR</span>
                                         <Link to={`/courses/${i}`} className="btn btn-primary btn-sm">Join Now</Link>
                                     </div>
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Success Stories Section */}
+            <section className="success-stories py-5">
+                <div className="container">
+                    <div className="section-header center">
+                        <h2>Student <span>Success Stories</span></h2>
+                        <p>Real results from real people who followed our mentorship program.</p>
+                    </div>
+                    <div className="stories-grid">
+                        {[
+                            { name: "Ahmed Khan", result: "+$2,400 Profit", text: "Before BBM, I was gambling. Now I understand market structure and trade with discipline.", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" },
+                            { name: "Saira Bano", result: "Funded Trader", text: "The institutional flow course changed my life. I just got funded with a $50k account!", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" },
+                            { name: "Zubair Ali", result: "90% Win Rate", text: "Simple, effective, and straight to the point. The mentors are always there to help.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" }
+                        ].map((story, i) => (
+                            <div key={i} className="story-card card">
+                                <div className="story-header">
+                                    <img src={story.img} alt={story.name} className="story-avatar" />
+                                    <div>
+                                        <h4>{story.name}</h4>
+                                        <span className="text-success font-bold">{story.result}</span>
+                                    </div>
+                                </div>
+                                <p>"{story.text}"</p>
+                                <div className="stars">⭐⭐⭐⭐⭐</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Certificate Announcement Section */}
+            <section className="cert-announcement bg-dark py-5">
+                <div className="container">
+                    <div className="cert-grid">
+                        <div className="cert-text">
+                            <h2>Get <span>Certified</span></h2>
+                            <p>Complete any of our courses and receive a globally recognized certificate from BullBear Mentors to showcase your expertise in the financial markets.</p>
+                            <Link to="/courses" className="btn btn-success">Start Your Journey</Link>
+                        </div>
+                        <div className="cert-preview">
+                            <div className="dummy-cert">
+                                <Award size={64} className="cert-icon" />
+                                <h3>Certificate of Excellence</h3>
+                                <p>Presented to</p>
+                                <div className="cert-name">Your Name Here</div>
+                                <p>For successfully completing the Advanced Trading Program</p>
+                                <div className="cert-footer">
+                                    <span>Issued by BBM</span>
+                                    <span>2026</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
