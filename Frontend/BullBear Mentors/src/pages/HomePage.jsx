@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle } from 'lucide-react';
+import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
     const { user } = useAuth();
+    const [recentCerts, setRecentCerts] = useState([]);
+    const [stories, setStories] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [storyRes, certRes] = await Promise.all([
+                    axios.get('/api/stories'),
+                    axios.get('/api/certificates') // Assuming this is public or we need a public endpoint
+                ]);
+                setStories(storyRes.data.filter(s => s.type === 'story').slice(0, 3));
+                setRecentCerts(certRes.data.slice(0, 4));
+            } catch (err) {
+                console.error('Failed to fetch home data');
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className="home-page fade-in">
