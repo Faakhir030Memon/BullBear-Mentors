@@ -267,7 +267,7 @@ const AdminCourses = () => {
                                 </td>
                                 <td>
                                     <div className="actions">
-                                        <button className="text-primary"><Edit size={18} /></button>
+                                        <button className="text-primary" onClick={() => handleEdit(course)}><Edit size={18} /></button>
                                         <button className="text-danger" onClick={() => handleDelete(course._id)}><Trash2 size={18} /></button>
                                     </div>
                                 </td>
