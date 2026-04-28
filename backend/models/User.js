@@ -8,6 +8,8 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     isBlocked: { type: Boolean, default: false },
+    profilePicture: { type: String, default: '' },
+    profilePicStatus: { type: String, enum: ['approved', 'pending', 'rejected'], default: 'approved' },
     loginHistory: [{
         loginTime: { type: Date, default: Date.now },
         ip: String
