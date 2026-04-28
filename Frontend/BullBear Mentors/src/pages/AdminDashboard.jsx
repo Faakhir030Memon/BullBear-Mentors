@@ -59,11 +59,12 @@ const AdminDashboard = () => {
                 {/* Admin Main Area */}
                 <main className="admin-main">
                     <Routes>
-                        <Route index element={<AdminStats />} />
+                        <Route index element={<div className="admin-content card"><h2>Welcome to BBM Admin Panel</h2><p>Select a section from the sidebar to manage.</p></div>} />
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="courses" element={<AdminCourses />} />
                         <Route path="payments" element={<AdminPayments />} />
                         <Route path="stories" element={<AdminStories />} />
+                        <Route path="certificates" element={<AdminCertificates />} />
                     </Routes>
                 </main>
             </div>
