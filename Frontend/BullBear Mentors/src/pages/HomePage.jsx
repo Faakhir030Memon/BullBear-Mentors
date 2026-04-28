@@ -126,23 +126,21 @@ const HomePage = () => {
                         <p>Real results from real people who followed our mentorship program.</p>
                     </div>
                     <div className="stories-grid">
-                        {[
-                            { name: "Ahmed Khan", result: "+$2,400 Profit", text: "Before BBM, I was gambling. Now I understand market structure and trade with discipline.", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" },
-                            { name: "Saira Bano", result: "Funded Trader", text: "The institutional flow course changed my life. I just got funded with a $50k account!", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" },
-                            { name: "Zubair Ali", result: "90% Win Rate", text: "Simple, effective, and straight to the point. The mentors are always there to help.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" }
-                        ].map((story, i) => (
+                        {stories.length > 0 ? stories.map((story, i) => (
                             <div key={i} className="story-card card">
                                 <div className="story-header">
-                                    <img src={story.img} alt={story.name} className="story-avatar" />
+                                    <img src={story.image} alt={story.name} className="story-avatar" />
                                     <div>
                                         <h4>{story.name}</h4>
-                                        <span className="text-success font-bold">{story.result}</span>
+                                        <span className="text-success font-bold">Verified Student</span>
                                     </div>
                                 </div>
-                                <p>"{story.text}"</p>
+                                <p>"{story.description}"</p>
                                 <div className="stars">⭐⭐⭐⭐⭐</div>
                             </div>
-                        ))}
+                        )) : (
+                            <p className="center">Join our community and share your success!</p>
+                        )}
                     </div>
                 </div>
             </section>
@@ -157,17 +155,31 @@ const HomePage = () => {
                             <Link to="/courses" className="btn btn-success">Start Your Journey</Link>
                         </div>
                         <div className="cert-preview">
-                            <div className="dummy-cert">
-                                <Award size={64} className="cert-icon" />
-                                <h3>Certificate of Excellence</h3>
-                                <p>Presented to</p>
-                                <div className="cert-name">Your Name Here</div>
-                                <p>For successfully completing the Advanced Trading Program</p>
-                                <div className="cert-footer">
-                                    <span>Issued by BBM</span>
-                                    <span>2026</span>
+                            {recentCerts.length > 0 ? (
+                                <div className="cert-ticker">
+                                    {recentCerts.map(cert => (
+                                        <div key={cert._id} className="cert-announce-card">
+                                            <Award size={24} className="text-success" />
+                                            <div className="cert-announce-info">
+                                                <strong>{cert.recipientName}</strong>
+                                                <span>Just Certified in {cert.courseTitle}</span>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="dummy-cert">
+                                    <Award size={64} className="cert-icon" />
+                                    <h3>Certificate of Excellence</h3>
+                                    <p>Presented to</p>
+                                    <div className="cert-name">Your Name Here</div>
+                                    <p>For successfully completing the Advanced Trading Program</p>
+                                    <div className="cert-footer">
+                                        <span>Issued by BBM</span>
+                                        <span>2026</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -229,6 +241,17 @@ const HomePage = () => {
                 .cert-icon { color: #c9a050; margin-bottom: 20px; }
                 .cert-name { font-size: 28px; font-family: 'Serif', serif; font-weight: 700; border-bottom: 2px solid #333; display: inline-block; margin: 20px 0; padding: 0 20px; }
                 .cert-footer { display: flex; justify-content: space-between; margin-top: 40px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+                .cert-ticker { display: flex; flex-direction: column; gap: 15px; }
+                .cert-announce-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); display: flex; align-items: center; gap: 20px; animation: slideInRight 0.5s ease-out; }
+                .cert-announce-info { display: flex; flex-direction: column; }
+                .cert-announce-info strong { font-size: 18px; color: white; }
+                .cert-announce-info span { font-size: 14px; opacity: 0.7; }
+                
+                @keyframes slideInRight {
+                    from { transform: translateX(30px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
 
                 @media (max-width: 1024px) {
                     .hero-content, .overview-grid, .cert-grid { grid-template-columns: 1fr; text-align: center; }
