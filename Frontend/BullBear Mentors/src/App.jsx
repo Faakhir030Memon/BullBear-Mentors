@@ -11,6 +11,7 @@ import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import CoursesPage from './pages/CoursesPage';
+import CourseDetailsPage from './pages/CourseDetailsPage';
 
 // Placeholder components for other pages
 const AboutPage = () => <div className="container py-5"><h1>About BullBear Mentors Coming Soon</h1></div>;
@@ -30,6 +31,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses/:id" element={<CourseDetailsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

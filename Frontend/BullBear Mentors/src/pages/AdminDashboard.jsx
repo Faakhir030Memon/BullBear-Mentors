@@ -11,11 +11,13 @@ import {
     TrendingUp
 } from 'lucide-react';
 
+import AdminCourses from './AdminCourses';
+import AdminUsers from './AdminUsers';
+import AdminPayments from './AdminPayments';
+
 // Admin Sub-pages
 const AdminStats = () => <div className="admin-content card"><h2>Overview Stats Coming Soon</h2></div>;
-const AdminUsers = () => <div className="admin-content card"><h2>User Management Coming Soon</h2></div>;
-const AdminCourses = () => <div className="admin-content card"><h2>Course Management Coming Soon</h2></div>;
-const AdminPayments = () => <div className="admin-content card"><h2>Payment Verification Coming Soon</h2></div>;
+const AdminStories = () => <div className="admin-content card"><h2>Success Stories Coming Soon</h2></div>;
 
 const AdminDashboard = () => {
     const location = useLocation();
@@ -60,8 +62,9 @@ const AdminDashboard = () => {
                     <Routes>
                         <Route index element={<AdminStats />} />
                         <Route path="users" element={<AdminUsers />} />
-                        <Route path="courses" element={<AdminAdminCourses />} />
+                        <Route path="courses" element={<AdminCourses />} />
                         <Route path="payments" element={<AdminPayments />} />
+                        <Route path="stories" element={<AdminStories />} />
                     </Routes>
                 </main>
             </div>
@@ -127,8 +130,5 @@ const AdminDashboard = () => {
         </div>
     );
 };
-
-// Fix the typo in the Route
-const AdminAdminCourses = AdminCourses;
 
 export default AdminDashboard;
