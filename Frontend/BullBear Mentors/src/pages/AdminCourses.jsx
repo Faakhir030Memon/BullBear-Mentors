@@ -12,6 +12,7 @@ const AdminCourses = () => {
         title: '',
         description: '',
         image: '',
+        category: 'Premium',
         prices: {
             oneMonth: 30000,
             sixMonth: 153000,
