@@ -130,6 +130,73 @@ const AdminCourses = () => {
                                 />
                             </div>
                         </div>
+                        
+                        <div className="content-manager mb-4 mt-4 p-3" style={{border: '1px solid #ddd', borderRadius: '8px'}}>
+                            <h4>Course Material (Videos, PDFs, Docs)</h4>
+                            {formData.content && formData.content.map((item, index) => (
+                                <div key={index} style={{display:'flex', gap:'10px', marginBottom:'10px', alignItems:'center'}}>
+                                    <input type="text" placeholder="Title" value={item.title} onChange={e => {
+                                        const newContent = [...formData.content];
+                                        newContent[index].title = e.target.value;
+                                        setFormData({...formData, content: newContent});
+                                    }} style={{flex: 1}} />
+                                    <input type="text" placeholder="Description" value={item.description} onChange={e => {
+                                        const newContent = [...formData.content];
+                                        newContent[index].description = e.target.value;
+                                        setFormData({...formData, content: newContent});
+                                    }} style={{flex: 1}} />
+                                    <a href={item.fileUrl} target="_blank" rel="noreferrer" style={{fontSize: '12px', whiteSpace:'nowrap'}}>View File</a>
+                                    <button type="button" className="text-danger" onClick={() => {
+                                        const newContent = [...formData.content];
+                                        newContent.splice(index, 1);
+                                        setFormData({...formData, content: newContent});
+                                    }} style={{background:'none', border:'none', cursor:'pointer'}}><Trash2 size={16} /></button>
+                                </div>
+                            ))}
+                            
+                            <div style={{display:'flex', gap:'10px', marginTop:'15px', alignItems:'flex-end'}}>
+                                <div style={{flex: 1}}>
+                                    <label style={{fontSize:'12px'}}>Item Title</label>
+                                    <input type="text" id="newContentTitle" placeholder="e.g. Chapter 1 Video" />
+                                </div>
+                                <div style={{flex: 1}}>
+                                    <label style={{fontSize:'12px'}}>Item Description</label>
+                                    <input type="text" id="newContentDesc" placeholder="Brief description" />
+                                </div>
+                                <div style={{flex: 1}}>
+                                    <label style={{fontSize:'12px'}}>Upload File (Video/PDF/Doc)</label>
+                                    <input type="file" id="newContentFile" />
+                                </div>
+                                <button type="button" className="btn btn-primary btn-sm" onClick={async () => {
+                                    const title = document.getElementById('newContentTitle').value;
+                                    const desc = document.getElementById('newContentDesc').value;
+                                    const fileInput = document.getElementById('newContentFile');
+                                    
+                                    if (!title || !fileInput.files[0]) return alert('Title and File are required');
+                                    
+                                    const fileData = new FormData();
+                                    fileData.append('file', fileInput.files[0]);
+                                    
+                                    try {
+                                        const res = await axios.post('/api/upload', fileData, config);
+                                        const newContentItem = {
+                                            title,
+                                            description: desc,
+                                            fileUrl: res.data.url,
+                                            fileType: res.data.type
+                                        };
+                                        setFormData({...formData, content: [...(formData.content || []), newContentItem]});
+                                        
+                                        document.getElementById('newContentTitle').value = '';
+                                        document.getElementById('newContentDesc').value = '';
+                                        fileInput.value = '';
+                                    } catch (err) {
+                                        alert(err.response?.data?.message || 'File upload failed');
+                                    }
+                                }}>Add Material</button>
+                            </div>
+                        </div>
+
                         <button type="submit" className="btn btn-success">Save Course</button>
                     </form>
                 </div>
