@@ -14,10 +14,8 @@ import {
 import AdminCourses from './AdminCourses';
 import AdminUsers from './AdminUsers';
 import AdminPayments from './AdminPayments';
-
-// Admin Sub-pages
-const AdminStats = () => <div className="admin-content card"><h2>Overview Stats Coming Soon</h2></div>;
-const AdminStories = () => <div className="admin-content card"><h2>Success Stories Coming Soon</h2></div>;
+import AdminStories from './AdminStories';
+import AdminCertificates from './AdminCertificates';
 
 const AdminDashboard = () => {
     const location = useLocation();
@@ -27,7 +25,8 @@ const AdminDashboard = () => {
         { path: '/admin/courses', icon: <BookOpen size={20} />, label: 'Manage Courses' },
         { path: '/admin/users', icon: <Users size={20} />, label: 'Manage Users' },
         { path: '/admin/payments', icon: <CreditCard size={20} />, label: 'Payments' },
-        { path: '/admin/stories', icon: <Award size={20} />, label: 'Success Stories' },
+        { path: '/admin/stories', icon: <TrendingUp size={20} />, label: 'Success Stories' },
+        { path: '/admin/certificates', icon: <Award size={20} />, label: 'Certificates' },
     ];
 
     return (
