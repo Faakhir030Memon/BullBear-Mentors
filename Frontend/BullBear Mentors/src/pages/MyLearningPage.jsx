@@ -3,11 +3,14 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ChatWindow from '../components/ChatWindow';
 
 const MyLearningPage = () => {
     const { user } = useAuth();
     const [purchases, setPurchases] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [adminInfo, setAdminInfo] = useState(null);
 
     useEffect(() => {
         const fetchMyCourses = async () => {
@@ -17,6 +20,13 @@ const MyLearningPage = () => {
                 };
                 const { data } = await axios.get('/api/purchase/my', config);
                 setPurchases(data);
+                
+                // Fetch admin info for chat
+                const convRes = await axios.get('/api/messages/conversations', config);
+                if (convRes.data && convRes.data.length > 0) {
+                    setAdminInfo(convRes.data[0].user);
+                }
+                
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -107,12 +117,25 @@ const MyLearningPage = () => {
                     </div>
 
                     <div className="help-section card">
-                        <h3>Need Help?</h3>
-                        <p>If your course isn't activated within 24 hours, please contact our support team.</p>
-                        <button className="btn btn-outline btn-block mt-3">Contact Support</button>
+                        <h3>Live Support</h3>
+                        <p>Need help with your course or payment? Chat directly with our admin for instant support.</p>
+                        <button 
+                            className="btn btn-primary btn-block mt-3" 
+                            onClick={() => setIsChatOpen(true)}
+                        >
+                            Live Chat with Admin
+                        </button>
                     </div>
                 </aside>
             </div>
+
+            {isChatOpen && adminInfo && (
+                <ChatWindow 
+                    recipientId={adminInfo._id} 
+                    recipientName={adminInfo.firstName + ' ' + (adminInfo.lastName || '')} 
+                    onClose={() => setIsChatOpen(false)} 
+                />
+            )}
 
             <style>{`
                 .section-header { margin-bottom: 48px; }
