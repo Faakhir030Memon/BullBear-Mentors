@@ -5,7 +5,7 @@ const Purchase = require('../models/Purchase');
 // @route   GET /api/courses
 // @access  Public
 const getCourses = async (req, res) => {
-    const courses = await Course.find({});
+    const courses = await Course.find({}).select('-content');
     res.json(courses);
 };
 

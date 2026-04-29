@@ -10,7 +10,8 @@ import {
     AlertCircle, 
     CheckCircle,
     ChevronRight,
-    Loader
+    Loader,
+    Lock
 } from 'lucide-react';
 
 const CourseDetailsPage = () => {
@@ -31,7 +32,8 @@ const CourseDetailsPage = () => {
     useEffect(() => {
         const fetchCourseAndStatus = async () => {
             try {
-                const { data } = await axios.get(`/api/courses/${id}`);
+                const config = user ? { headers: { Authorization: `Bearer ${user.token}` } } : {};
+                const { data } = await axios.get(`/api/courses/${id}`, config);
                 setCourse(data);
                 
                 if (user) {
