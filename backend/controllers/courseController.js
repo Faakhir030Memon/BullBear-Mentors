@@ -1,66 +1,20 @@
 const Course = require('../models/Course');
-const Purchase = require('../models/Purchase');
 
 // @desc    Fetch all courses
 // @route   GET /api/courses
 // @access  Public
 const getCourses = async (req, res) => {
-    // For listing, we can omit content entirely or hide fileUrls
     const courses = await Course.find({});
-    
-    // Sanitize listing: remove fileUrls from content if present
-    const sanitizedCourses = courses.map(course => {
-        const courseObj = course.toObject();
-        if (courseObj.content) {
-            courseObj.content = courseObj.content.map(item => ({
-                title: item.title,
-                description: item.description,
-                fileType: item.fileType
-            }));
-        }
-        return courseObj;
-    });
-
-    res.json(sanitizedCourses);
+    res.json(courses);
 };
 
 // @desc    Fetch single course
 // @route   GET /api/courses/:id
-// @access  Public (Optional Auth)
+// @access  Public
 const getCourseById = async (req, res) => {
     const course = await Course.findById(req.params.id);
 
     if (course) {
-        let isEnrolled = false;
-
-        // If user is logged in, check enrollment status
-        if (req.user) {
-            if (req.user.role === 'admin') {
-                isEnrolled = true;
-            } else {
-                const purchase = await Purchase.findOne({
-                    user: req.user._id,
-                    course: course._id,
-                    status: 'active'
-                });
-                if (purchase) isEnrolled = true;
-            }
-        }
-
-        // If not enrolled/admin, hide the actual file URLs
-        if (!isEnrolled) {
-            const courseObj = course.toObject();
-            if (courseObj.content) {
-                courseObj.content = courseObj.content.map(item => ({
-                    title: item.title,
-                    description: item.description,
-                    fileType: item.fileType,
-                    // fileUrl is intentionally omitted
-                }));
-            }
-            return res.json(courseObj);
-        }
-
         res.json(course);
     } else {
         res.status(404).json({ message: 'Course not found' });

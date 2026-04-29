@@ -26,19 +26,6 @@ const protect = async (req, res, next) => {
     }
 };
 
-const optionalProtect = async (req, res, next) => {
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
-            const token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decoded.id).select('-password');
-        } catch (error) {
-            // Proceed without user if token is invalid
-        }
-    }
-    next();
-};
-
 const admin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
@@ -47,4 +34,4 @@ const admin = (req, res, next) => {
     }
 };
 
-module.exports = { protect, optionalProtect, admin };
+module.exports = { protect, admin };
