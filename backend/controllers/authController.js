@@ -94,6 +94,9 @@ const updateUserProfile = async (req, res) => {
         user.firstName = req.body.firstName || user.firstName;
         user.lastName = req.body.lastName || user.lastName;
         if (req.body.password) {
+            if (user.role === 'admin') {
+                return res.status(400).json({ message: 'Admin password cannot be changed via profile' });
+            }
             user.password = req.body.password;
         }
 
