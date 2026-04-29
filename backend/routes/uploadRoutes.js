@@ -3,7 +3,7 @@ const router = express.Router();
 const upload = require('../middleware/uploadMiddleware');
 const { protect, admin } = require('../middleware/authMiddleware');
 
-router.post('/', protect, admin, upload.single('file'), (req, res) => {
+router.post('/', protect, upload.single('file'), (req, res) => {
     if (req.file) {
         res.json({
             url: `/${req.file.path.replace('\\', '/')}`, // normalize path for windows
