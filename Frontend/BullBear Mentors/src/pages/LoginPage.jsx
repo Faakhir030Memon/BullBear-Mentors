@@ -173,6 +173,19 @@ const LoginPage = () => {
                     gap: 10px;
                     font-size: 14px;
                 }
+                .forgot-password-link {
+                    text-align: right;
+                    margin-top: 8px;
+                }
+                .forgot-password-link a {
+                    font-size: 13px;
+                    color: var(--text-secondary);
+                    text-decoration: none;
+                    transition: var(--transition);
+                }
+                .forgot-password-link a:hover {
+                    color: var(--primary);
+                }
                 .login-footer {
                     margin-top: 32px;
                     text-align: center;
