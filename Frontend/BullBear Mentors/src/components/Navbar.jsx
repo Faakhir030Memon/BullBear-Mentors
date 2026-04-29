@@ -1,11 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { TrendingUp, User, LogOut, BookOpen, Home, Info, Shield, PlayCircle } from 'lucide-react';
+import { TrendingUp, User, LogOut, BookOpen, Home, Info, Shield, PlayCircle, MessageSquare } from 'lucide-react';
+import axios from 'axios';
+import ChatWindow from './ChatWindow';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [hasActivePurchase, setHasActivePurchase] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [adminInfo, setAdminInfo] = useState(null);
+
+    useEffect(() => {
+        const checkPurchaseStatus = async () => {
+            if (user && user.role !== 'admin') {
+                try {
+                    const config = {
+                        headers: { Authorization: `Bearer ${user.token}` }
+                    };
+                    const { data } = await axios.get('/api/purchase/my', config);
+                    const active = data.some(p => p.status === 'active');
+                    setHasActivePurchase(active);
+
+                    // Fetch admin info for chat
+                    const convRes = await axios.get('/api/messages/conversations', config);
+                    if (convRes.data && convRes.data.length > 0) {
+                        setAdminInfo(convRes.data[0].user);
+                    }
+                } catch (err) {
+                    console.error('Failed to check purchase status', err);
+                }
+            } else if (user?.role === 'admin') {
+                setHasActivePurchase(true); // Admin always has access
+            }
+        };
+        checkPurchaseStatus();
+    }, [user]);
+
+    const handleChatClick = (e) => {
+        e.preventDefault();
+        if (hasActivePurchase) {
+            if (user.role === 'admin') {
+                navigate('/admin/messages');
+            } else {
+                setIsChatOpen(true);
+            }
+        } else {
+            alert('Kindly purchase course after this feature can be available');
+        }
+    };
 
     const handleLogout = () => {
         logout();
@@ -27,6 +71,9 @@ const Navbar = () => {
                     <Link to="/courses" className="nav-link"><BookOpen size={18} /> Courses</Link>
                     <Link to="/my-learning" className="nav-link"><PlayCircle size={18} /> My Learning</Link>
                     <Link to="/about" className="nav-link"><Info size={18} /> About</Link>
+                    <a href="#" onClick={handleChatClick} className="nav-link chat-link">
+                        <MessageSquare size={18} /> Live Chat
+                    </a>
                     {user.role === 'admin' && (
                         <Link to="/admin" className="nav-link text-danger"><Shield size={18} /> Admin</Link>
                     )}
@@ -83,6 +130,10 @@ const Navbar = () => {
                 .nav-link:hover {
                     color: var(--primary);
                 }
+                .chat-link {
+                    color: var(--primary);
+                    font-weight: 600;
+                }
                 .nav-actions {
                     display: flex;
                     align-items: center;
@@ -107,12 +158,26 @@ const Navbar = () => {
                 .logout-btn:hover {
                     color: var(--danger);
                 }
+                @media (max-width: 992px) {
+                    .nav-links {
+                        gap: 15px;
+                    }
+                    .nav-link span { display: none; }
+                }
                 @media (max-width: 768px) {
                     .nav-links {
                         display: none;
                     }
                 }
             `}</style>
+
+            {isChatOpen && adminInfo && (
+                <ChatWindow 
+                    recipientId={adminInfo._id} 
+                    recipientName={adminInfo.firstName + ' ' + (adminInfo.lastName || '')} 
+                    onClose={() => setIsChatOpen(false)} 
+                />
+            )}
         </nav>
     );
 };
