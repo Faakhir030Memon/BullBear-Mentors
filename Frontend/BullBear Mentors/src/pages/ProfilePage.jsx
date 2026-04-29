@@ -307,29 +307,38 @@ const ProfilePage = () => {
 
                             <div className="form-section">
                                 <h3>Security</h3>
-                                <p className="section-note">Leave password fields empty if you don't want to change it</p>
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label htmlFor="password">New Password</label>
-                                        <input
-                                            type="password"
-                                            id="password"
-                                            placeholder="••••••••"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                        />
+                                {user?.role === 'admin' ? (
+                                    <div className="alert alert-info" style={{background: '#e6f7ff', border: '1px solid #91d5ff', color: '#0050b3'}}>
+                                        <Lock size={18} />
+                                        <span>For security reasons, Admin passwords can only be changed via the system backend.</span>
                                     </div>
-                                    <div className="form-group">
-                                        <label htmlFor="confirmPassword">Confirm New Password</label>
-                                        <input
-                                            type="password"
-                                            id="confirmPassword"
-                                            placeholder="••••••••"
-                                            value={formData.confirmPassword}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
+                                ) : (
+                                    <>
+                                        <p className="section-note">Leave password fields empty if you don't want to change it</p>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label htmlFor="password">New Password</label>
+                                                <input
+                                                    type="password"
+                                                    id="password"
+                                                    placeholder="••••••••"
+                                                    value={formData.password}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="confirmPassword">Confirm New Password</label>
+                                                <input
+                                                    type="password"
+                                                    id="confirmPassword"
+                                                    placeholder="••••••••"
+                                                    value={formData.confirmPassword}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             <button type="submit" className="btn btn-primary" disabled={loading}>
