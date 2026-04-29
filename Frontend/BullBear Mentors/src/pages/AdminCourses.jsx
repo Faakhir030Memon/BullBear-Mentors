@@ -39,19 +39,24 @@ const AdminCourses = () => {
         fetchCourses();
     }, []);
 
-    const handleEdit = (course) => {
-        setFormData({
-            _id: course._id,
-            title: course.title,
-            description: course.description,
-            image: course.image,
-            category: course.category || 'Premium',
-            prices: course.prices,
-            content: course.content || [],
-            isActive: course.isActive
-        });
-        setIsAdding(true);
-        window.scrollTo(0, 0);
+    const handleEdit = async (course) => {
+        try {
+            const { data } = await axios.get(`/api/courses/${course._id}`, config);
+            setFormData({
+                _id: data._id,
+                title: data.title,
+                description: data.description,
+                image: data.image,
+                category: data.category || 'Premium',
+                prices: data.prices,
+                content: data.content || [],
+                isActive: data.isActive
+            });
+            setIsAdding(true);
+            window.scrollTo(0, 0);
+        } catch (err) {
+            alert('Failed to fetch course details');
+        }
     };
 
     const handleAddCourse = async (e) => {
