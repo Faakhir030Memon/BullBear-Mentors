@@ -54,23 +54,9 @@ const MyLearningPage = () => {
                                             <span>Expires on: {new Date(p.expiryDate).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <div className="course-actions">
-                                        <Link to={`/courses/${p.course?._id}`} className="btn btn-primary">
-                                            Start Learning <PlayCircle size={18} />
-                                        </Link>
-                                        {p.course?.content?.length > 0 && (
-                                            <div className="course-downloads mt-3">
-                                                <p className="small-label">Resources:</p>
-                                                <div className="download-grid">
-                                                    {p.course.content.map((file, i) => (
-                                                        <a key={i} href={file.fileUrl} target="_blank" rel="noreferrer" className="download-btn-pill">
-                                                            <Download size={14} /> {file.title || 'Material'}
-                                                        </a>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                    <Link to={`/courses/${p.course?._id}`} className="btn btn-primary">
+                                        Start Learning <PlayCircle size={18} />
+                                    </Link>
                                 </div>
                             </div>
                         ))
@@ -93,24 +79,20 @@ const MyLearningPage = () => {
                                     <div className="pending-info">
                                         <strong>{p.course?.title}</strong>
                                         <span>Trans ID: {p.transactionId}</span>
-                                        {p.status === 'active' && (
+                                        {p.status === 'active' && p.course?.content?.length > 0 && (
                                             <div className="download-area mt-2">
-                                                {p.course?.content?.length > 0 ? (
-                                                    p.course.content.map((item, idx) => (
-                                                        <a 
-                                                            key={idx} 
-                                                            href={item.fileUrl} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer" 
-                                                            className="download-link"
-                                                            title={item.description || item.title}
-                                                        >
-                                                            <Download size={12} /> {item.title || 'File'}
-                                                        </a>
-                                                    ))
-                                                ) : (
-                                                    <span className="no-files-text">No files attached to this course.</span>
-                                                )}
+                                                {p.course.content.map((item, idx) => (
+                                                    <a 
+                                                        key={idx} 
+                                                        href={item.fileUrl} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className="download-link"
+                                                        title={item.description || item.title}
+                                                    >
+                                                        <Download size={12} /> {item.title || 'File'}
+                                                    </a>
+                                                ))}
                                             </div>
                                         )}
                                     </div>
@@ -167,17 +149,6 @@ const MyLearningPage = () => {
                     transition: all 0.2s;
                 }
                 .download-link:hover { background: var(--success); color: white; border-color: var(--success); }
-                .course-actions { display: flex; flex-direction: column; gap: 10px; min-width: 200px; }
-                .small-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; }
-                .download-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-                .download-btn-pill { 
-                    display: flex; align-items: center; gap: 5px; padding: 6px 12px; 
-                    background: var(--bg-secondary); border: 1px solid var(--border-color);
-                    border-radius: 20px; font-size: 12px; color: var(--text-main); text-decoration: none;
-                    transition: all 0.3s;
-                }
-                .download-btn-pill:hover { background: var(--success); color: white; border-color: var(--success); transform: translateY(-2px); }
-                .no-files-text { font-size: 11px; color: var(--text-secondary); font-style: italic; }
                 .help-section h3 { font-size: 16px; margin-bottom: 15px; }
                 .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
                 .mb-3 { margin-bottom: 1rem; }
