@@ -10,19 +10,19 @@ const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = await User.findById(decoded.id).select('-password');
             
-            if (req.user.isBlocked) {
+            if (req.user && req.user.isBlocked) {
                 return res.status(401).json({ message: 'User is blocked' });
             }
 
-            next();
+            return next();
         } catch (error) {
             console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            return res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
 
     if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+        return res.status(401).json({ message: 'Not authorized, no token' });
     }
 };
 
@@ -45,7 +45,7 @@ const optionalProtect = async (req, res, next) => {
             // Token error, but we don't block access
         }
     }
-    next();
+    return next();
 };
 
 module.exports = { protect, admin, optionalProtect };
