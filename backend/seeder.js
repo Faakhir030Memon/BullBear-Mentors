@@ -19,8 +19,8 @@ const seedData = async () => {
         const hashedPassword = await bcrypt.hash('admin123', salt);
         
         await User.create({
-            firstName: 'Admin',
-            lastName: 'User',
+            firstName: 'Mymn',
+            lastName: 'SaaB',
             email: 'admin@bullbear.com',
             password: hashedPassword,
             role: 'admin'
