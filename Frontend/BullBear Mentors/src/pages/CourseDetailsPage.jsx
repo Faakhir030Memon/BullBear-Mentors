@@ -10,7 +10,8 @@ import {
     AlertCircle, 
     CheckCircle,
     ChevronRight,
-    Loader
+    Loader,
+    Lock
 } from 'lucide-react';
 
 const CourseDetailsPage = () => {
@@ -130,9 +131,9 @@ const CourseDetailsPage = () => {
                                             </a>
                                         </div>
                                     ) : (
-                                        <div style={{marginTop: '10px', marginLeft: '30px', fontSize: '12px', color: '#faad14'}}>
-                                            <Lock size={12} style={{display: 'inline', marginRight: '5px'}} />
-                                            Content locked until payment verification.
+                                        <div style={{marginTop: '10px', marginLeft: '30px', fontSize: '12px', color: '#faad14', background: '#fffbe6', padding: '8px 12px', borderRadius: '4px', border: '1px solid #ffe58f'}}>
+                                            <Lock size={14} style={{display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom'}} />
+                                            Content locked. Purchase this course to access materials.
                                         </div>
                                     )}
                                 </div>

@@ -61,7 +61,22 @@ const verifyPurchase = async (req, res) => {
 // @access  Private
 const getMyPurchases = async (req, res) => {
     const purchases = await Purchase.find({ user: req.user._id }).populate('course');
-    res.json(purchases);
+    
+    // Sanitize purchases: if not active, hide fileUrls
+    const sanitizedPurchases = purchases.map(p => {
+        const pObj = p.toObject();
+        if (pObj.status !== 'active' && pObj.course && pObj.course.content) {
+            pObj.course.content = pObj.course.content.map(item => ({
+                title: item.title,
+                description: item.description,
+                fileType: item.fileType
+                // fileUrl omitted
+            }));
+        }
+        return pObj;
+    });
+
+    res.json(sanitizedPurchases);
 };
 
 // @desc    Get all purchases (Admin)

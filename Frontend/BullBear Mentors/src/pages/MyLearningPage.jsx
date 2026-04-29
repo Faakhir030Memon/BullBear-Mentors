@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Book, Clock, AlertCircle, PlayCircle, Loader } from 'lucide-react';
+import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const MyLearningPage = () => {
@@ -29,7 +29,7 @@ const MyLearningPage = () => {
     if (loading) return <div className="loader-container"><Loader size={48} className="animate-spin text-success" /></div>;
 
     const activePurchases = purchases.filter(p => p.status === 'active' && new Date(p.expiryDate) > new Date());
-    const pendingPurchases = purchases.filter(p => p.status === 'pending');
+    const verificationItems = purchases.filter(p => p.status === 'pending' || p.status === 'active');
 
     return (
         <div className="my-learning container py-5 fade-in">
@@ -72,19 +72,37 @@ const MyLearningPage = () => {
                 {/* Pending & Stats */}
                 <aside className="learning-sidebar">
                     <div className="pending-section card mb-4">
-                        <h3>Pending Verifications</h3>
-                        {pendingPurchases.length > 0 ? (
-                            pendingPurchases.map(p => (
+                        <h3>Verification Status</h3>
+                        {verificationItems.length > 0 ? (
+                            verificationItems.map(p => (
                                 <div key={p._id} className="pending-item">
                                     <div className="pending-info">
                                         <strong>{p.course?.title}</strong>
                                         <span>Trans ID: {p.transactionId}</span>
+                                        {p.status === 'active' && p.course?.content?.length > 0 && (
+                                            <div className="download-area mt-2">
+                                                {p.course.content.map((item, idx) => (
+                                                    <a 
+                                                        key={idx} 
+                                                        href={item.fileUrl} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className="download-link"
+                                                        title={item.description || item.title}
+                                                    >
+                                                        <Download size={12} /> {item.title || 'File'}
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
-                                    <span className="status-badge pending">PENDING</span>
+                                    <span className={`status-badge ${p.status}`}>
+                                        {p.status === 'active' ? 'APPROVED' : 'PENDING'}
+                                    </span>
                                 </div>
                             ))
                         ) : (
-                            <p className="no-pending">No pending verifications.</p>
+                            <p className="no-pending">No recent verifications.</p>
                         )}
                     </div>
 
@@ -120,7 +138,17 @@ const MyLearningPage = () => {
                 .pending-info span { font-size: 11px; color: var(--text-secondary); }
                 .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
                 .status-badge.pending { background: #fff7e6; color: #faad14; }
+                .status-badge.active { background: #f6ffed; color: var(--success); }
                 .no-pending { font-size: 13px; color: var(--text-secondary); }
+                .download-area { display: flex; flex-wrap: wrap; gap: 8px; }
+                .download-link { 
+                    display: flex; align-items: center; gap: 4px; 
+                    font-size: 11px; background: var(--bg-secondary); 
+                    padding: 4px 8px; border-radius: 4px; color: var(--text-main);
+                    text-decoration: none; border: 1px solid var(--border-color);
+                    transition: all 0.2s;
+                }
+                .download-link:hover { background: var(--success); color: white; border-color: var(--success); }
                 .help-section h3 { font-size: 16px; margin-bottom: 15px; }
                 .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
                 .mb-3 { margin-bottom: 1rem; }
