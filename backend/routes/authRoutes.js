@@ -6,12 +6,18 @@ const {
     getUserProfile,
     updateUserProfile,
     uploadProfilePicture,
+    forgotPassword,
+    resetPassword
 } = require('../controllers/authController');
+
 const { protect } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
 router.post('/register', registerUser);
 router.post('/login', authUser);
+router.post('/forgotpassword', forgotPassword);
+router.put('/resetpassword/:resettoken', resetPassword);
+
 router
     .route('/profile')
     .get(protect, getUserProfile)
