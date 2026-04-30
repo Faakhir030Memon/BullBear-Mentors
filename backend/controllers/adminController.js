@@ -111,10 +111,11 @@ const exportPurchases = async (req, res) => {
             const userName = `${p.user?.firstName || 'Unknown'} ${p.user?.lastName || 'User'}`;
             const email = p.user?.email || 'N/A';
             const courseTitle = p.course?.title || 'Deleted Course';
-            const purchaseDate = p.startDate ? new Date(p.startDate).toLocaleDateString() : new Date(p.createdAt).toLocaleDateString();
-            const expiryDate = p.expiryDate ? new Date(p.expiryDate).toLocaleDateString() : 'N/A';
+            const purchaseDate = p.startDate ? new Date(p.startDate).toISOString().split('T')[0] : new Date(p.createdAt).toISOString().split('T')[0];
+            const expiryDate = p.expiryDate ? new Date(p.expiryDate).toISOString().split('T')[0] : 'N/A';
             
-            csv += `"${userName}","${email}","${courseTitle}","${p.transactionId}",${p.amount},${p.duration},"${p.status}","${purchaseDate}","${expiryDate}"\n`;
+            // Adding a single quote before transactionId to force Excel to treat it as text
+            csv += `"${userName}","${email}","${courseTitle}","'${p.transactionId}",${p.amount},${p.duration},"${p.status}","${purchaseDate}","${expiryDate}"\n`;
         });
 
         res.setHeader('Content-Type', 'text/csv');
