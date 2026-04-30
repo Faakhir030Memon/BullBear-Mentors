@@ -9,7 +9,8 @@ import {
     Settings,
     ChevronRight,
     TrendingUp,
-    MessageSquare
+    MessageSquare,
+    Video
 } from 'lucide-react';
 
 import AdminCourses from './AdminCourses';
@@ -18,6 +19,7 @@ import AdminPayments from './AdminPayments';
 import AdminStories from './AdminStories';
 import AdminCertificates from './AdminCertificates';
 import AdminChat from './AdminChat';
+import AdminSessions from './AdminSessions';
 
 const AdminDashboard = () => {
     const location = useLocation();
@@ -29,6 +31,7 @@ const AdminDashboard = () => {
         { path: '/admin/payments', icon: <CreditCard size={20} />, label: 'Payments' },
         { path: '/admin/stories', icon: <TrendingUp size={20} />, label: 'Success Stories' },
         { path: '/admin/certificates', icon: <Award size={20} />, label: 'Certificates' },
+        { path: '/admin/sessions', icon: <Video size={20} />, label: 'Live Sessions' },
         { path: '/admin/messages', icon: <MessageSquare size={20} />, label: 'Messages' },
         { path: '/profile', icon: <Users size={20} />, label: 'My Profile' },
     ];
@@ -69,6 +72,7 @@ const AdminDashboard = () => {
                         <Route path="payments" element={<AdminPayments />} />
                         <Route path="stories" element={<AdminStories />} />
                         <Route path="certificates" element={<AdminCertificates />} />
+                        <Route path="sessions" element={<AdminSessions />} />
                         <Route path="messages" element={<AdminChat />} />
                     </Routes>
                 </main>

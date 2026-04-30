@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
+import { Book, Clock, AlertCircle, PlayCircle, Loader, Download, Video, Calendar, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ChatWindow from '../components/ChatWindow';
 
 const MyLearningPage = () => {
     const { user } = useAuth();
     const [purchases, setPurchases] = useState([]);
+    const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [adminInfo, setAdminInfo] = useState(null);
@@ -18,8 +19,13 @@ const MyLearningPage = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` }
                 };
-                const { data } = await axios.get('/api/purchase/my', config);
-                setPurchases(data);
+                const [purchaseRes, sessionRes] = await Promise.all([
+                    axios.get('/api/purchase/my', config),
+                    axios.get('/api/sessions', config)
+                ]);
+                
+                setPurchases(purchaseRes.data);
+                setSessions(sessionRes.data);
                 
                 // Fetch admin info for chat
                 const convRes = await axios.get('/api/messages/conversations', config);
@@ -49,8 +55,48 @@ const MyLearningPage = () => {
             </div>
 
             <div className="learning-grid">
-                {/* Active Courses */}
-                <div className="active-courses">
+                <div className="main-content">
+                    {/* Live Sessions */}
+                    {sessions.length > 0 && (
+                        <div className="live-sessions-section mb-5">
+                            <h2 className="d-flex align-items-center gap-3 mb-4">
+                                <div className="live-dot"></div>
+                                Upcoming Live Sessions
+                            </h2>
+                            <div className="sessions-list">
+                                {sessions.map(session => (
+                                    <div key={session._id} className="session-card card p-4 mb-3">
+                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                            <div className="session-info">
+                                                <div className="course-tag">{session.course?.title}</div>
+                                                <h3 className="mt-1">{session.title}</h3>
+                                                <p className="text-secondary small">{session.description}</p>
+                                                <div className="session-meta d-flex gap-4 mt-2 flex-wrap">
+                                                    <span className="d-flex align-items-center gap-2">
+                                                        <Calendar size={14} /> {new Date(session.startTime).toLocaleString()}
+                                                    </span>
+                                                    <span className="d-flex align-items-center gap-2">
+                                                        <Clock size={14} /> {session.duration} mins
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <a 
+                                                href={session.zoomLink} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="btn btn-primary join-btn"
+                                            >
+                                                <Video size={18} /> Join Now
+                                            </a>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Active Courses */}
+                    <div className="active-courses">
                     <h2>Active Courses</h2>
                     {activePurchases.length > 0 ? (
                         activePurchases.map(p => (
