@@ -14,8 +14,7 @@ const courseSchema = mongoose.Schema({
         title: String,
         description: String,
         fileUrl: String,
-        fileType: String, // e.g. 'video', 'pdf', 'word', 'image'
-        fileSize: String // e.g. '2.5 MB'
+        fileType: String // e.g. 'video', 'pdf', 'word', 'image'
     }],
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
