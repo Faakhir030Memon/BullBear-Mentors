@@ -1,33 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle, ArrowRight } from 'lucide-react';
+import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/dist/ScrollTrigger';
-import Scene3D from '../components/Scene3D';
-import SmoothScroll from '../components/SmoothScroll';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const HomePage = () => {
     const { user } = useAuth();
     const [recentCerts, setRecentCerts] = useState([]);
     const [stories, setStories] = useState([]);
     const [courses, setCourses] = useState([]);
-    
-    const heroRef = useRef();
-    const overviewRef = useRef();
-    const coursesRef = useRef();
-    const storiesRef = useRef();
-    const certRef = useRef();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [storyRes, certRes, courseRes] = await Promise.all([
                     axios.get('/api/stories'),
-                    axios.get('/api/certificates'),
+                    axios.get('/api/certificates'), // Assuming this is public or we need a public endpoint
                     axios.get('/api/courses')
                 ]);
                 setStories(storyRes.data.filter(s => s.type === 'story').slice(0, 3));
@@ -40,102 +28,44 @@ const HomePage = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        // Hero Animations
-        const ctx = gsap.context(() => {
-            gsap.from('.hero-text > *', {
-                y: 50,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power4.out'
-            });
-
-            gsap.from('.stat-card', {
-                x: 100,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.15,
-                ease: 'back.out(1.7)',
-                delay: 0.5
-            });
-
-            // Section Reveals
-            const sections = [overviewRef, coursesRef, storiesRef, certRef];
-            sections.forEach(ref => {
-                if (ref.current) {
-                    gsap.from(ref.current.querySelectorAll('.reveal'), {
-                        scrollTrigger: {
-                            trigger: ref.current,
-                            start: 'top 80%',
-                            toggleActions: 'play none none reverse'
-                        },
-                        y: 50,
-                        opacity: 0,
-                        duration: 0.8,
-                        stagger: 0.2,
-                        ease: 'power2.out'
-                    });
-                }
-            });
-
-            // Parallax Effects
-            gsap.to('.hero-content', {
-                scrollTrigger: {
-                    trigger: '.hero',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: true
-                },
-                y: 100,
-                opacity: 0
-            });
-        });
-
-        return () => ctx.revert();
-    }, [courses, stories]);
-
     return (
-        <div className="home-page">
-            <SmoothScroll />
-            <Scene3D />
-            
+        <div className="home-page fade-in">
             {/* Hero Section */}
-            <section className="hero" ref={heroRef}>
+            <section className="hero">
                 <div className="container hero-content">
                     <div className="hero-text">
-                        <div className="badge glass">🔥 The Future of Trading</div>
-                        <h1>Master the Battle of <span>Bulls vs Bears</span></h1>
-                        <p>Join the elite league of professional traders. Master institutional flow and high-probability strategies with our premium mentorship.</p>
+                        <div className="badge">Welcome back, {user?.firstName}</div>
+                        <h1>Master the Markets with <span>BullBear Mentors</span></h1>
+                        <p>Learn professional trading strategies from experts. From basic technical analysis to advanced institutional flow.</p>
                         <div className="hero-btns">
                             <Link to="/courses" className="btn btn-primary">
-                                Get Started Now <ArrowRight size={20} />
+                                Explore Courses <ChevronRight size={20} />
                             </Link>
                             <Link to="/about" className="btn btn-outline">
-                                View Results
+                                Success Stories
                             </Link>
                         </div>
                     </div>
                     <div className="hero-stats">
-                        <div className="stat-card glass">
-                            <div className="icon-wrap bull"><TrendingUp size={24} /></div>
+                        <div className="stat-card">
+                            <TrendingUp className="text-success" />
                             <div>
-                                <h3>95.4%</h3>
+                                <h3>95%</h3>
                                 <p>Success Rate</p>
                             </div>
                         </div>
-                        <div className="stat-card glass">
-                            <div className="icon-wrap bear"><Users size={24} /></div>
+                        <div className="stat-card">
+                            <Users className="text-primary" />
                             <div>
-                                <h3>2.5k+</h3>
-                                <p>Active Traders</p>
+                                <h3>1,200+</h3>
+                                <p>Active Students</p>
                             </div>
                         </div>
-                        <div className="stat-card glass">
-                            <div className="icon-wrap bull"><Award size={24} /></div>
+                        <div className="stat-card">
+                            <Award className="text-success" />
                             <div>
-                                <h3>Elite</h3>
-                                <p>Global Certification</p>
+                                <h3>Premium</h3>
+                                <p>Certificates</p>
                             </div>
                         </div>
                     </div>
@@ -143,48 +73,46 @@ const HomePage = () => {
             </section>
 
             {/* Overview Section */}
-            <section className="overview py-10" ref={overviewRef}>
+            <section className="overview py-5">
                 <div className="container">
                     <div className="overview-grid">
-                        <div className="overview-image reveal">
-                            <div className="image-glass-wrap">
-                                <img src="https://images.unsplash.com/photo-1611974714131-7e873f848148?auto=format&fit=crop&q=80&w=800" alt="Trading Terminal" />
-                            </div>
+                        <div className="overview-image">
+                            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800" alt="Trading Analysis" />
                         </div>
-                        <div className="overview-text reveal">
-                            <div className="badge glass">Why BullBear Mentors?</div>
-                            <h2>Your Gateway to <span>Financial Freedom</span></h2>
-                            <p>We don't just teach charts; we teach the psychology and the mechanics of the market. Our ecosystem is built for those who demand excellence.</p>
+                        <div className="overview-text">
+                            <div className="badge">Why BullBear Mentors?</div>
+                            <h2>Your Gateway to <span>Financial Independence</span></h2>
+                            <p>BullBear Mentors is more than just a course. It's a comprehensive ecosystem designed to take you from a beginner to a professional trader. We focus on high-probability institutional trading methods that the big players use.</p>
                             <ul className="features-list">
-                                <li><div className="bullet bull"></div> Live Institutional Flow Analysis</li>
-                                <li><div className="bullet bull"></div> 1-on-1 Mentorship Sessions</li>
-                                <li><div className="bullet bull"></div> Proprietary AI-Driven Signals</li>
-                                <li><div className="bullet bull"></div> 24/7 Global Trading Community</li>
+                                <li><CheckCircle className="text-success" size={20} /> Live Market Analysis & Signals</li>
+                                <li><CheckCircle className="text-success" size={20} /> Mentorship from Professional Traders</li>
+                                <li><CheckCircle className="text-success" size={20} /> Proprietary Trading Strategies</li>
+                                <li><CheckCircle className="text-success" size={20} /> Lifetime Community Access</li>
                             </ul>
-                            <Link to="/about" className="btn btn-primary">Discover More</Link>
+                            <Link to="/about" className="btn btn-primary">Learn More About Us</Link>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Featured Courses Section */}
-            <section className="featured py-10" ref={coursesRef}>
+            <section className="featured bg-light py-5">
                 <div className="container">
-                    <div className="section-header reveal">
-                        <h2>Elite Training <span>Programs</span></h2>
-                        <Link to="/courses" className="text-success">Browse All <ChevronRight size={18} /></Link>
+                    <div className="section-header">
+                        <h2>Our Premium Courses</h2>
+                        <Link to="/courses" className="text-success">View All Courses <ChevronRight size={18} /></Link>
                     </div>
                     <div className="course-grid">
-                        {(courses.length > 0 ? courses : [1, 2, 3]).map((c, i) => (
-                            <div key={c._id || i} className="course-card glass reveal">
-                                <div className="course-img" style={{backgroundImage: `url(${c.image || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400'})`}}></div>
+                        {[1, 2, 3].map(i => (
+                            <div key={`premium-soon-${i}`} className="course-card card">
+                                <div className="course-img" style={{backgroundImage: `url(https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400)`, backgroundSize: 'cover'}}></div>
                                 <div className="course-info">
-                                    <span className="course-tag">{c.category || 'Professional'}</span>
-                                    <h3>{c.title || `Advanced Masterclass ${i + 1}`}</h3>
-                                    <p>{c.description || 'Master institutional trading strategies and secure your future.'}</p>
+                                    <span className="course-tag" style={{background: 'var(--primary)', color: 'white'}}>Premium</span>
+                                    <h3>Advanced Masterclass {i}</h3>
+                                    <p>Exclusive premium strategies to master institutional trading and secure your financial independence.</p>
                                     <div className="course-footer">
-                                        <span className="price">{c.prices?.oneMonth || 'Premium'}</span>
-                                        <Link to={c._id ? `/courses/${c._id}` : '/courses'} className="btn btn-primary btn-sm">Join Program</Link>
+                                        <span className="price">TBD</span>
+                                        <button disabled className="btn btn-secondary btn-sm" style={{opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#6c757d', color: 'white'}}>Coming Soon</button>
                                     </div>
                                 </div>
                             </div>
@@ -194,129 +122,146 @@ const HomePage = () => {
             </section>
 
             {/* Success Stories Section */}
-            <section className="success-stories py-10" ref={storiesRef}>
+            <section className="success-stories py-5">
                 <div className="container">
-                    <div className="section-header center reveal">
-                        <h2>The <span>Wall of Fame</span></h2>
-                        <p>From beginners to consistently profitable professional traders.</p>
+                    <div className="section-header center">
+                        <h2>Student <span>Success Stories</span></h2>
+                        <p>Real results from real people who followed our mentorship program.</p>
                     </div>
                     <div className="stories-grid">
                         {stories.length > 0 ? stories.map((story, i) => (
-                            <div key={i} className="story-card glass reveal">
+                            <div key={i} className="story-card card">
                                 <div className="story-header">
                                     <img src={story.image} alt={story.name} className="story-avatar" />
                                     <div>
                                         <h4>{story.name}</h4>
-                                        <span className="text-success font-bold">Verified Result</span>
+                                        <span className="text-success font-bold">Verified Student</span>
                                     </div>
                                 </div>
                                 <p>"{story.description}"</p>
-                                <div className="stars">✨✨✨✨✨</div>
+                                <div className="stars">⭐⭐⭐⭐⭐</div>
                             </div>
                         )) : (
-                            <div className="empty-stories reveal">
-                                <Quote size={48} className="text-dim" />
-                                <p>Join our mentorship and become our next success story.</p>
-                            </div>
+                            <p className="center">Join our community and share your success!</p>
                         )}
                     </div>
                 </div>
             </section>
 
             {/* Certificate Announcement Section */}
-            <section className="cert-announcement py-10" ref={certRef}>
+            <section className="cert-announcement bg-dark py-5">
                 <div className="container">
                     <div className="cert-grid">
-                        <div className="cert-text reveal">
-                            <h2>Global <span>Recognition</span></h2>
-                            <p>Our certificates are symbols of trading mastery. Validated by the community and recognized across the industry.</p>
-                            <Link to="/courses" className="btn btn-success">Get Certified</Link>
+                        <div className="cert-text">
+                            <h2>Get <span>Certified</span></h2>
+                            <p>Complete any of our courses and receive a globally recognized certificate from BullBear Mentors to showcase your expertise in the financial markets.</p>
+                            <Link to="/courses" className="btn btn-success">Start Your Journey</Link>
                         </div>
-                        <div className="cert-preview reveal">
-                            <div className="premium-cert-card glass">
-                                <div className="cert-inner">
-                                    <Award size={64} className="text-success" />
-                                    <h3>Certification of Mastery</h3>
-                                    <p>Institutional Trading Flow</p>
-                                    <div className="cert-line"></div>
+                        <div className="cert-preview">
+                            {recentCerts.length > 0 ? (
+                                <div className="cert-ticker">
+                                    {recentCerts.map(cert => (
+                                        <div key={cert._id} className="cert-announce-card">
+                                            <Award size={24} className="text-success" />
+                                            <div className="cert-announce-info">
+                                                <strong>{cert.recipientName}</strong>
+                                                <span>Just Certified in {cert.courseTitle}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="dummy-cert">
+                                    <Award size={64} className="cert-icon" />
+                                    <h3>Certificate of Excellence</h3>
+                                    <p>Presented to</p>
+                                    <div className="cert-name">Your Name Here</div>
+                                    <p>For successfully completing the Advanced Trading Program</p>
                                     <div className="cert-footer">
-                                        <span>BullBear Mentors</span>
-                                        <span>2026-2027</span>
+                                        <span>Issued by BBM</span>
+                                        <span>2026</span>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </section>
 
             <style>{`
-                .home-page { position: relative; }
-                .hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 0; }
-                .hero-content { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: center; }
-                .badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
-                .hero-text h1 { font-size: 72px; font-weight: 900; line-height: 1; margin-bottom: 24px; letter-spacing: -2px; }
-                .hero-text h1 span { 
-                    background: linear-gradient(135deg, var(--success) 0%, #00f206 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-                .hero-text p { font-size: 20px; color: var(--text-dim); margin-bottom: 40px; max-width: 550px; }
-                .hero-btns { display: flex; gap: 20px; }
+                .home-page { padding-bottom: 80px; }
+                .hero { padding: 80px 0; background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%); }
+                .hero-content { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+                .badge { display: inline-block; padding: 6px 12px; background-color: rgba(0, 200, 5, 0.1); color: var(--success); border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+                .hero-text h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+                .hero-text h1 span { color: var(--success); }
+                .hero-text p { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 500px; }
+                .hero-btns { display: flex; gap: 16px; }
+                .btn-outline { border: 1px solid var(--border-color); background: white; }
+                .hero-stats { display: flex; flex-direction: column; gap: 20px; }
+                .stat-card { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 20px; border-left: 4px solid var(--success); }
+                .stat-card h3 { font-size: 24px; margin-bottom: 4px; }
+                .stat-card p { font-size: 14px; color: var(--text-secondary); }
+                .section-header { display: flex; justify-content: space-between; align-items: center; margin: 80px 0 32px; }
+                .section-header h2 { font-size: 32px; font-weight: 700; }
+                .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+                .course-card { padding: 0; overflow: hidden; transition: var(--transition); }
+                .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+                .course-img { height: 200px; background-color: #eee; }
+                .course-info { padding: 24px; }
+                .course-tag { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; display: block; }
+                .course-info h3 { margin-bottom: 12px; }
+                .course-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+                .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border-color); }
+                .price { font-size: 20px; font-weight: 700; color: var(--primary); }
+                .btn-sm { padding: 8px 16px; font-size: 14px; }
+
+                .bg-light { background-color: #f8f9fa; }
+                .bg-dark { background-color: #111; color: white; }
+                .py-5 { padding: 80px 0; }
+                .center { text-align: center; }
+                .font-bold { font-weight: 700; }
+
+                /* Overview Styles */
+                .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+                .overview-image img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+                .overview-text h2 { font-size: 40px; margin-bottom: 24px; }
+                .features-list { list-style: none; margin: 32px 0; }
+                .features-list li { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-weight: 500; }
+
+                /* Success Stories Styles */
+                .stories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+                .story-card { padding: 30px; }
+                .story-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+                .story-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+                .story-card p { font-style: italic; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+
+                /* Certificate Styles */
+                .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+                .cert-text h2 { font-size: 40px; margin-bottom: 24px; }
+                .cert-text p { font-size: 18px; opacity: 0.8; margin-bottom: 32px; }
+                .dummy-cert { background: white; color: #333; padding: 40px; border-radius: 4px; border: 15px solid #111; outline: 2px solid #c9a050; outline-offset: -10px; text-align: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+                .cert-icon { color: #c9a050; margin-bottom: 20px; }
+                .cert-name { font-size: 28px; font-family: 'Serif', serif; font-weight: 700; border-bottom: 2px solid #333; display: inline-block; margin: 20px 0; padding: 0 20px; }
+                .cert-footer { display: flex; justify-content: space-between; margin-top: 40px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+                .cert-ticker { display: flex; flex-direction: column; gap: 15px; }
+                .cert-announce-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); display: flex; align-items: center; gap: 20px; animation: slideInRight 0.5s ease-out; }
+                .cert-announce-info { display: flex; flex-direction: column; }
+                .cert-announce-info strong { font-size: 18px; color: white; }
+                .cert-announce-info span { font-size: 14px; opacity: 0.7; }
                 
-                .hero-stats { display: flex; flex-direction: column; gap: 24px; }
-                .stat-card { padding: 24px; display: flex; align-items: center; gap: 20px; }
-                .stat-card h3 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-                .stat-card p { font-size: 14px; color: var(--text-dim); }
-                .icon-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-                .icon-wrap.bull { background: rgba(0, 200, 5, 0.1); color: var(--success); }
-                .icon-wrap.bear { background: rgba(255, 77, 77, 0.1); color: var(--danger); }
-
-                .py-10 { padding: 120px 0; }
-                .section-header { margin-bottom: 60px; display: flex; justify-content: space-between; align-items: flex-end; }
-                .section-header h2 { font-size: 48px; font-weight: 800; }
-                .section-header h2 span { color: var(--success); }
-
-                .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-                .image-glass-wrap { padding: 15px; border-radius: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); }
-                .overview-image img { width: 100%; border-radius: 12px; filter: grayscale(0.5); transition: var(--transition); }
-                .overview-image:hover img { filter: grayscale(0); }
-                .overview-text h2 { font-size: 48px; margin-bottom: 30px; }
-                .features-list { list-style: none; margin: 40px 0; }
-                .features-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 18px; font-weight: 500; }
-                .bullet { width: 10px; height: 10px; border-radius: 50%; }
-                .bullet.bull { background: var(--success); box-shadow: 0 0 10px var(--success); }
-
-                .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 32px; }
-                .course-card { padding: 0; overflow: hidden; }
-                .course-card:hover { transform: translateY(-10px); border-color: var(--success); }
-                .course-img { height: 240px; background-size: cover; background-position: center; filter: brightness(0.7); }
-                .course-info { padding: 32px; }
-                .course-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--success); margin-bottom: 15px; display: block; letter-spacing: 1px; }
-                .course-info h3 { font-size: 24px; margin-bottom: 15px; }
-                .course-info p { color: var(--text-dim); font-size: 15px; margin-bottom: 30px; }
-                .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 25px; border-top: 1px solid var(--border-glass); }
-                .price { font-size: 22px; font-weight: 800; color: white; }
-
-                .stories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
-                .story-card { padding: 40px; }
-                .story-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
-                .story-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--success); padding: 3px; }
-                .story-card p { font-size: 16px; color: var(--text-dim); font-style: italic; margin-bottom: 25px; }
-
-                .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-                .premium-cert-card { padding: 60px; text-align: center; position: relative; overflow: hidden; }
-                .cert-inner { border: 2px dashed var(--border-glass); padding: 40px; border-radius: 8px; }
-                .cert-line { width: 80px; height: 3px; background: var(--success); margin: 30px auto; }
-                .cert-footer { display: flex; justify-content: space-between; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; }
+                @keyframes slideInRight {
+                    from { transform: translateX(30px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
 
                 @media (max-width: 1024px) {
                     .hero-content, .overview-grid, .cert-grid { grid-template-columns: 1fr; text-align: center; }
-                    .hero-text h1 { font-size: 56px; }
-                    .hero-btns, .hero-stats { justify-content: center; align-items: center; }
-                    .hero-stats { flex-direction: row; flex-wrap: wrap; }
+                    .hero-text p, .cert-text p { margin: 0 auto 32px; }
+                    .hero-btns { justify-content: center; }
+                    .hero-stats { flex-direction: row; flex-wrap: wrap; justify-content: center; }
                     .features-list li { justify-content: center; }
-                    .section-header { flex-direction: column; align-items: center; text-align: center; gap: 20px; }
                 }
             `}</style>
         </div>
