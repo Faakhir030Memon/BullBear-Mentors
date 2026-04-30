@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Book, Clock, AlertCircle, PlayCircle, Loader, Download } from 'lucide-react';
+import { Book, Clock, AlertCircle, PlayCircle, Loader, Download, FileText, Video, File, X, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ChatWindow from '../components/ChatWindow';
 
@@ -11,6 +11,9 @@ const MyLearningPage = () => {
     const [loading, setLoading] = useState(true);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [adminInfo, setAdminInfo] = useState(null);
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [downloading, setDownloading] = useState(null);
 
     useEffect(() => {
         const fetchMyCourses = async () => {
@@ -35,6 +38,31 @@ const MyLearningPage = () => {
         };
         fetchMyCourses();
     }, [user.token]);
+
+    const handleDownload = async (courseId, fileIndex, fileName) => {
+        setDownloading(`${courseId}-${fileIndex}`);
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${user.token}` },
+                responseType: 'blob'
+            };
+            const { data } = await axios.get(`/api/courses/${courseId}/download/${fileIndex}`, config);
+            
+            const url = window.URL.createObjectURL(new Blob([data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName || 'course-material');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            setDownloading(null);
+        } catch (err) {
+            console.error(err);
+            alert('Download failed. Please try again.');
+            setDownloading(null);
+        }
+    };
 
     if (loading) return <div className="loader-container"><Loader size={48} className="animate-spin text-success" /></div>;
 
@@ -64,9 +92,22 @@ const MyLearningPage = () => {
                                             <span>Expires on: {new Date(p.expiryDate).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <Link to={`/courses/${p.course?._id}`} className="btn btn-primary">
-                                        Start Learning <PlayCircle size={18} />
-                                    </Link>
+                                    <div className="card-actions">
+                                        <Link to={`/courses/${p.course?._id}`} className="btn btn-primary">
+                                            Start Learning <PlayCircle size={18} />
+                                        </Link>
+                                        {p.course?.content?.length > 0 && (
+                                            <button 
+                                                className="btn btn-outline-success ml-2"
+                                                onClick={() => {
+                                                    setSelectedCourse(p.course);
+                                                    setShowModal(true);
+                                                }}
+                                            >
+                                                <Download size={18} /> Resources
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))
@@ -143,56 +184,145 @@ const MyLearningPage = () => {
                 />
             )}
 
+            {showModal && selectedCourse && (
+                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                    <div className="download-modal fade-in" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>{selectedCourse.title} - Resources</h3>
+                            <button className="close-btn" onClick={() => setShowModal(false)}><X size={24} /></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="files-list">
+                                {selectedCourse.content.map((file, index) => (
+                                    <div key={index} className="file-item">
+                                        <div className="file-icon">
+                                            {file.fileType?.includes('video') ? <Video size={24} /> : 
+                                             file.fileType?.includes('pdf') ? <FileText size={24} /> : <File size={24} />}
+                                        </div>
+                                        <div className="file-details">
+                                            <div className="file-name">{file.title || 'Course Material'}</div>
+                                            <div className="file-meta">
+                                                <span>{file.fileSize || 'N/A'}</span>
+                                                <span className="dot">•</span>
+                                                <span>{file.fileType?.split('/')[1]?.toUpperCase() || 'FILE'}</span>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            className="btn-download-action"
+                                            onClick={() => handleDownload(selectedCourse._id, index, file.title)}
+                                            disabled={downloading === `${selectedCourse._id}-${index}`}
+                                        >
+                                            {downloading === `${selectedCourse._id}-${index}` ? (
+                                                <Loader className="animate-spin" size={18} />
+                                            ) : (
+                                                <Download size={18} />
+                                            )}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <div className="secure-badge">
+                                <CheckCircle size={14} className="text-success" />
+                                Secure Download System
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`
                 .section-header { margin-bottom: 48px; }
                 .learning-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
                 .active-courses h2 { margin-bottom: 24px; }
-                .course-access-card { padding: 24px; }
-                .card-top { display: flex; align-items: center; gap: 20px; }
+                .course-access-card { padding: 24px; transition: all 0.3s ease; }
+                .course-access-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+                .card-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
                 .course-icon { 
-                    width: 50px; height: 50px; background: var(--bg-secondary); 
-                    border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--success);
+                    width: 60px; height: 60px; background: #f0fdf4; 
+                    border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--success);
                 }
-                .course-info { flex-grow: 1; }
-                .course-info h3 { font-size: 18px; margin-bottom: 4px; }
-                .expiry-info { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
-                .empty-state { text-align: center; padding: 60px; }
+                .course-info { flex-grow: 1; min-width: 200px; }
+                .course-info h3 { font-size: 20px; margin-bottom: 8px; font-weight: 700; }
+                .expiry-info { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+                .card-actions { display: flex; gap: 12px; }
+                
+                .btn-outline-success {
+                    border: 2px solid var(--success); color: var(--success); background: transparent;
+                    padding: 10px 20px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+                    transition: all 0.2s;
+                }
+                .btn-outline-success:hover { background: var(--success); color: white; }
+
+                .modal-overlay {
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+                    display: flex; align-items: center; justify-content: center; z-index: 1000;
+                }
+                .download-modal {
+                    background: white; width: 90%; max-width: 500px; border-radius: 24px;
+                    overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+                }
+                .modal-header { 
+                    padding: 24px; border-bottom: 1px solid #f0f0f0; display: flex; 
+                    justify-content: space-between; align-items: center; background: #fafafa;
+                }
+                .modal-header h3 { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+                .close-btn { background: none; border: none; cursor: pointer; color: #666; transition: color 0.2s; }
+                .close-btn:hover { color: var(--danger); }
+                
+                .modal-body { padding: 24px; max-height: 400px; overflow-y: auto; }
+                .file-item { 
+                    display: flex; align-items: center; gap: 16px; padding: 16px;
+                    border: 1px solid #f0f0f0; border-radius: 16px; margin-bottom: 12px;
+                    transition: all 0.2s;
+                }
+                .file-item:hover { border-color: var(--success); background: #f6ffed; }
+                .file-icon { 
+                    width: 48px; height: 48px; background: #f8f9fa; border-radius: 12px;
+                    display: flex; align-items: center; justify-content: center; color: #666;
+                }
+                .file-details { flex-grow: 1; }
+                .file-name { font-weight: 600; font-size: 15px; color: #333; margin-bottom: 4px; }
+                .file-meta { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
+                .dot { color: #ccc; }
+                
+                .btn-download-action {
+                    width: 40px; height: 40px; border-radius: 10px; border: none;
+                    background: var(--success); color: white; display: flex;
+                    align-items: center; justify-content: center; cursor: pointer;
+                    transition: transform 0.2s;
+                }
+                .btn-download-action:hover:not(:disabled) { transform: scale(1.1); }
+                .btn-download-action:disabled { background: #ccc; cursor: not-allowed; }
+
+                .modal-footer { padding: 16px 24px; background: #fdfdfd; border-top: 1px solid #f0f0f0; }
+                .secure-badge { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; justify-content: center; }
+
+                /* Sidebar Styles */
                 .pending-section h3 { font-size: 16px; margin-bottom: 20px; }
-                .pending-item { 
-                    padding: 16px 0; border-bottom: 1px solid var(--border-color);
-                }
-                .pending-info { display: flex; flex-direction: column; }
+                .pending-item { padding: 16px 0; border-bottom: 1px solid var(--border-color); }
                 .pending-header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-                .title-area { display: flex; flex-direction: column; }
-                .pending-info strong { font-size: 15px; color: var(--text-main); }
-                .pending-info span { font-size: 12px; color: var(--text-secondary); }
+                .status-actions-group { display: flex; align-items: center; gap: 10px; }
+                .compact-downloads { display: flex; gap: 6px; }
+                .icon-download-btn {
+                    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+                    background: #f0fdf4; border: 1px solid #b7eb8f;
+                    border-radius: 8px; color: var(--success); transition: all 0.2s ease;
+                }
+                .icon-download-btn:hover { background: var(--success); color: white; transform: translateY(-2px); }
                 .status-badge { 
                     padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; 
                     text-transform: uppercase; letter-spacing: 0.5px;
                 }
                 .status-badge.pending { background: #fff7e6; color: #faad14; border: 1px solid #ffe58f; }
                 .status-badge.active { background: #f6ffed; color: var(--success); border: 1px solid #b7eb8f; }
-                .no-pending { font-size: 13px; color: var(--text-secondary); }
                 
-                .status-actions-group { display: flex; align-items: center; gap: 10px; }
-                .compact-downloads { display: flex; gap: 6px; }
-                .icon-download-btn {
-                    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
-                    background: var(--bg-secondary); border: 1px solid var(--border-color);
-                    border-radius: 8px; color: var(--success); transition: all 0.2s ease;
-                }
-                .icon-download-btn:hover {
-                    background: var(--success); color: white; border-color: var(--success);
-                    transform: translateY(-2px);
-                }
-                .download-button span { flex-grow: 1; text-align: center; }
-                .help-section h3 { font-size: 16px; margin-bottom: 15px; }
-                .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-                .mb-3 { margin-bottom: 1rem; }
-                .mb-4 { margin-bottom: 1.5rem; }
-                .mt-3 { margin-top: 1rem; }
                 @media (max-width: 992px) {
                     .learning-grid { grid-template-columns: 1fr; }
+                    .card-actions { margin-top: 15px; width: 100%; }
+                    .btn-primary, .btn-outline-success { flex-grow: 1; justify-content: center; }
                 }
             `}</style>
         </div>

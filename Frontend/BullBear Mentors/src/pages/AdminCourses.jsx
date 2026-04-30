@@ -229,7 +229,8 @@ const AdminCourses = () => {
                                             title,
                                             description: desc,
                                             fileUrl: res.data.url,
-                                            fileType: res.data.type
+                                            fileType: res.data.type,
+                                            fileSize: res.data.size
                                         };
                                         setFormData({...formData, content: [...(formData.content || []), newContentItem]});
                                         
