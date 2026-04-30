@@ -224,6 +224,36 @@ const MyLearningPage = () => {
                 @media (max-width: 992px) {
                     .learning-grid { grid-template-columns: 1fr; }
                 }
+                .live-dot {
+                    width: 12px; height: 12px; background: #ff4d4f; border-radius: 50%;
+                    box-shadow: 0 0 0 rgba(255, 77, 79, 0.4);
+                    animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.4); }
+                    70% { box-shadow: 0 0 0 10px rgba(255, 77, 79, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+                }
+                .course-tag {
+                    display: inline-block; padding: 2px 8px; background: var(--bg-secondary);
+                    color: var(--primary); font-size: 11px; font-weight: 700; border-radius: 4px;
+                    text-transform: uppercase;
+                }
+                .session-card {
+                    border-left: 4px solid var(--success) !important;
+                    transition: transform 0.2s;
+                }
+                .session-card:hover { transform: scale(1.01); }
+                .join-btn {
+                    padding: 12px 24px; font-weight: 700; border-radius: 30px;
+                    display: flex; align-items: center; gap: 10px;
+                }
+                .gap-3 { gap: 12px; }
+                .gap-4 { gap: 20px; }
+                .mb-5 { margin-bottom: 40px; }
+                .mt-1 { margin-top: 4px; }
+                .mt-2 { margin-top: 8px; }
+                .border-left-success { border-left: 4px solid var(--success); }
             `}</style>
         </div>
     );
