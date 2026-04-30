@@ -5,6 +5,7 @@ const {
     getAllCertificates,
     getMyCertificates,
     getCertificateById,
+    getPublicCertificates,
     deleteCertificate
 } = require('../controllers/certificateController');
 const { protect, admin } = require('../middleware/authMiddleware');
