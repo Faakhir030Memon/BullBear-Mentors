@@ -105,15 +105,16 @@ const exportPurchases = async (req, res) => {
             .populate('user', 'firstName lastName email')
             .populate('course', 'title');
 
-        let csv = 'User Name,Email,Course,Transaction ID,Amount,Duration (Months),Status,Date\n';
+        let csv = 'User Name,Email,Course,Transaction ID,Amount,Duration (Months),Status,Purchase Date,Expiry Date\n';
 
         purchases.forEach(p => {
             const userName = `${p.user?.firstName || 'Unknown'} ${p.user?.lastName || 'User'}`;
             const email = p.user?.email || 'N/A';
             const courseTitle = p.course?.title || 'Deleted Course';
-            const date = new Date(p.createdAt).toLocaleDateString();
+            const purchaseDate = p.startDate ? new Date(p.startDate).toLocaleDateString() : new Date(p.createdAt).toLocaleDateString();
+            const expiryDate = p.expiryDate ? new Date(p.expiryDate).toLocaleDateString() : 'N/A';
             
-            csv += `"${userName}","${email}","${courseTitle}","${p.transactionId}",${p.amount},${p.duration},"${p.status}","${date}"\n`;
+            csv += `"${userName}","${email}","${courseTitle}","${p.transactionId}",${p.amount},${p.duration},"${p.status}","${purchaseDate}","${expiryDate}"\n`;
         });
 
         res.setHeader('Content-Type', 'text/csv');
