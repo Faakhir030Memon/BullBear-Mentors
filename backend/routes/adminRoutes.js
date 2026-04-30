@@ -12,6 +12,7 @@ const {
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.get('/stats', protect, admin, getStats);
+router.get('/export-purchases', protect, admin, exportPurchases);
 router.get('/users', protect, admin, getUsers);
 router.put('/users/:id/block', protect, admin, blockUser);
 router.put('/users/:id/pic-status', protect, admin, updatePicStatus);
