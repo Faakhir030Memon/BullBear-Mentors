@@ -19,6 +19,8 @@ const AdminCourses = () => {
             twelveMonth: 270000
         }
     });
+    const [uploading, setUploading] = useState(false);
+    const [newMaterial, setNewMaterial] = useState({ title: '', description: '', file: null });
 
     const config = {
         headers: { Authorization: `Bearer ${user.token}` }
@@ -191,7 +193,7 @@ const AdminCourses = () => {
                                         newContent[index].description = e.target.value;
                                         setFormData({...formData, content: newContent});
                                     }} style={{flex: 1}} />
-                                    <a href={item.fileUrl} target="_blank" rel="noreferrer" style={{fontSize: '12px', whiteSpace:'nowrap'}}>View File</a>
+                                    <a href={item.fileUrl} target="_blank" rel="noreferrer" style={{fontSize: '12px', whiteSpace:'nowrap', color: 'var(--success)'}}>View File</a>
                                     <button type="button" className="text-danger" onClick={() => {
                                         const newContent = [...formData.content];
                                         newContent.splice(index, 1);
@@ -200,46 +202,66 @@ const AdminCourses = () => {
                                 </div>
                             ))}
                             
-                            <div style={{display:'flex', gap:'10px', marginTop:'15px', alignItems:'flex-end'}}>
+                            <div style={{display:'flex', gap:'10px', marginTop:'15px', alignItems:'flex-end', background: '#f9f9f9', padding: '15px', borderRadius: '8px'}}>
                                 <div style={{flex: 1}}>
-                                    <label style={{fontSize:'12px'}}>Item Title</label>
-                                    <input type="text" id="newContentTitle" placeholder="e.g. Chapter 1 Video" />
+                                    <label style={{fontSize:'12px', fontWeight: '600'}}>Item Title</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. Chapter 1 Video" 
+                                        value={newMaterial.title}
+                                        onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
+                                    />
                                 </div>
                                 <div style={{flex: 1}}>
-                                    <label style={{fontSize:'12px'}}>Item Description</label>
-                                    <input type="text" id="newContentDesc" placeholder="Brief description" />
+                                    <label style={{fontSize:'12px', fontWeight: '600'}}>Item Description</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Brief description" 
+                                        value={newMaterial.description}
+                                        onChange={(e) => setNewMaterial({...newMaterial, description: e.target.value})}
+                                    />
                                 </div>
                                 <div style={{flex: 1}}>
-                                    <label style={{fontSize:'12px'}}>Upload File (Video/PDF/Doc)</label>
-                                    <input type="file" id="newContentFile" />
+                                    <label style={{fontSize:'12px', fontWeight: '600'}}>Upload File</label>
+                                    <input 
+                                        type="file" 
+                                        onChange={(e) => setNewMaterial({...newMaterial, file: e.target.files[0]})}
+                                    />
                                 </div>
-                                <button type="button" className="btn btn-primary btn-sm" onClick={async () => {
-                                    const title = document.getElementById('newContentTitle').value;
-                                    const desc = document.getElementById('newContentDesc').value;
-                                    const fileInput = document.getElementById('newContentFile');
-                                    
-                                    if (!title || !fileInput.files[0]) return alert('Title and File are required');
-                                    
-                                    const fileData = new FormData();
-                                    fileData.append('file', fileInput.files[0]);
-                                    
-                                    try {
-                                        const res = await axios.post('/api/upload', fileData, config);
-                                        const newContentItem = {
-                                            title,
-                                            description: desc,
-                                            fileUrl: res.data.url,
-                                            fileType: res.data.type
-                                        };
-                                        setFormData({...formData, content: [...(formData.content || []), newContentItem]});
+                                <button 
+                                    type="button" 
+                                    className="btn btn-primary" 
+                                    disabled={uploading}
+                                    onClick={async () => {
+                                        if (!newMaterial.title || !newMaterial.file) {
+                                            return alert('Title and File are required');
+                                        }
                                         
-                                        document.getElementById('newContentTitle').value = '';
-                                        document.getElementById('newContentDesc').value = '';
-                                        fileInput.value = '';
-                                    } catch (err) {
-                                        alert(err.response?.data?.message || 'File upload failed');
-                                    }
-                                }}>Add Material</button>
+                                        setUploading(true);
+                                        const fileData = new FormData();
+                                        fileData.append('file', newMaterial.file);
+                                        
+                                        try {
+                                            const res = await axios.post('/api/upload', fileData, config);
+                                            const newContentItem = {
+                                                title: newMaterial.title,
+                                                description: newMaterial.description,
+                                                fileUrl: res.data.url,
+                                                fileType: res.data.type
+                                            };
+                                            setFormData({...formData, content: [...(formData.content || []), newContentItem]});
+                                            setNewMaterial({ title: '', description: '', file: null });
+                                            alert('Material added successfully!');
+                                        } catch (err) {
+                                            console.error(err);
+                                            alert(err.response?.data?.message || 'File upload failed');
+                                        } finally {
+                                            setUploading(false);
+                                        }
+                                    }}
+                                >
+                                    {uploading ? 'Uploading...' : 'Add Material'}
+                                </button>
                             </div>
                         </div>
 
