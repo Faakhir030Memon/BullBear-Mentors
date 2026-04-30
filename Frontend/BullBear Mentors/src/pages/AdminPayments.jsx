@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Check, X, CreditCard, ExternalLink, Loader } from 'lucide-react';
+import { Check, X, FileText, Download, Loader } from 'lucide-react';
 
 const AdminPayments = () => {
     const { user } = useAuth();
@@ -27,12 +27,22 @@ const AdminPayments = () => {
         fetchPurchases();
     }, []);
 
-    const handleVerify = async (id, status) => {
+    const handleExport = async () => {
         try {
-            await axios.put(`/api/purchase/${id}/verify`, { status }, config);
-            fetchPurchases();
+            const response = await axios.get('/api/admin/export-purchases', {
+                ...config,
+                responseType: 'blob'
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `BBM_Purchases_Report_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         } catch (err) {
-            alert('Failed to verify payment');
+            console.error(err);
+            alert('Failed to export report');
         }
     };
 
@@ -40,9 +50,14 @@ const AdminPayments = () => {
 
     return (
         <div className="admin-payments fade-in">
-            <div className="admin-header">
-                <h2>Payment Verification</h2>
-                <p>Pending: {purchases.filter(p => p.status === 'pending').length}</p>
+            <div className="admin-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h2>Payment Verification</h2>
+                    <p>Pending: {purchases.filter(p => p.status === 'pending').length}</p>
+                </div>
+                <button className="btn btn-outline btn-sm d-flex align-items-center gap-2" onClick={handleExport}>
+                    <Download size={18} /> Export Excel Report
+                </button>
             </div>
 
             <div className="payments-table card">
