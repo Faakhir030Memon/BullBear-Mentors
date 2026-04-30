@@ -140,9 +140,9 @@ const MyLearningPage = () => {
                         </div>
                     )}
                 </div>
-
-                {/* Pending & Stats */}
-                <aside className="learning-sidebar">
+            </div>
+            {/* Pending & Stats */}
+            <aside className="learning-sidebar">
                     <div className="pending-section card mb-4">
                         <h3>Verification Status</h3>
                         {verificationItems.length > 0 ? (
@@ -205,7 +205,7 @@ const MyLearningPage = () => {
                 />
             )}
 
-            <style>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 .section-header { margin-bottom: 48px; }
                 .learning-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
                 .active-courses h2 { margin-bottom: 24px; }
@@ -300,7 +300,7 @@ const MyLearningPage = () => {
                 .mt-1 { margin-top: 4px; }
                 .mt-2 { margin-top: 8px; }
                 .border-left-success { border-left: 4px solid var(--success); }
-            `}</style>
+            ` }} />
         </div>
     );
 };
