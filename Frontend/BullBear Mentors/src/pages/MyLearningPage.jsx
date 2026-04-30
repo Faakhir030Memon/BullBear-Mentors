@@ -92,28 +92,28 @@ const MyLearningPage = () => {
                                                 <strong>{p.course?.title}</strong>
                                                 <span>Trans ID: {p.transactionId}</span>
                                             </div>
-                                            <span className={`status-badge ${p.status}`}>
-                                                {p.status === 'active' ? 'APPROVED' : 'PENDING'}
-                                            </span>
-                                        </div>
-                                        
-                                        {p.status === 'active' && p.course?.content?.length > 0 && (
-                                            <div className="download-area mt-3">
-                                                {p.course.content.map((item, idx) => (
-                                                    <a 
-                                                        key={idx} 
-                                                        href={item.fileUrl} 
-                                                        target="_blank" 
-                                                        rel="noopener noreferrer" 
-                                                        className="download-button"
-                                                        title={item.description || item.title}
-                                                    >
-                                                        <Download size={16} /> 
-                                                        <span>Download {item.title || 'Material'}</span>
-                                                    </a>
-                                                ))}
+                                            <div className="status-actions-group">
+                                                {p.status === 'active' && p.course?.content?.length > 0 && (
+                                                    <div className="compact-downloads">
+                                                        {p.course.content.map((item, idx) => (
+                                                            <a 
+                                                                key={idx} 
+                                                                href={item.fileUrl} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer" 
+                                                                className="icon-download-btn"
+                                                                title={`Download: ${item.title || 'Material'}`}
+                                                            >
+                                                                <Download size={16} />
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                <span className={`status-badge ${p.status}`}>
+                                                    {p.status === 'active' ? 'APPROVED' : 'PENDING'}
+                                                </span>
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -174,20 +174,16 @@ const MyLearningPage = () => {
                 .status-badge.active { background: #f6ffed; color: var(--success); border: 1px solid #b7eb8f; }
                 .no-pending { font-size: 13px; color: var(--text-secondary); }
                 
-                .download-area { display: flex; flex-direction: column; gap: 10px; }
-                .download-button { 
-                    display: flex; align-items: center; justify-content: center; gap: 10px; 
-                    font-size: 13px; font-weight: 600;
-                    background: linear-gradient(135deg, var(--success) 0%, #218838 100%);
-                    color: white; padding: 10px 16px; border-radius: 8px;
-                    text-decoration: none; transition: all 0.3s ease;
-                    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+                .status-actions-group { display: flex; align-items: center; gap: 10px; }
+                .compact-downloads { display: flex; gap: 6px; }
+                .icon-download-btn {
+                    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+                    background: var(--bg-secondary); border: 1px solid var(--border-color);
+                    border-radius: 8px; color: var(--success); transition: all 0.2s ease;
                 }
-                .download-button:hover { 
-                    transform: translateY(-2px); 
-                    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.25);
-                    color: white; 
-                    filter: brightness(1.1);
+                .icon-download-btn:hover {
+                    background: var(--success); color: white; border-color: var(--success);
+                    transform: translateY(-2px);
                 }
                 .download-button span { flex-grow: 1; text-align: center; }
                 .help-section h3 { font-size: 16px; margin-bottom: 15px; }
