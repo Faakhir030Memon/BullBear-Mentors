@@ -111,6 +111,10 @@ const AdminPayments = () => {
 
             <style>{`
                 .admin-header { margin-bottom: 24px; }
+                .d-flex { display: flex; }
+                .justify-content-between { justify-content: space-between; }
+                .align-items-center { align-items: center; }
+                .gap-2 { gap: 8px; }
                 .user-info { display: flex; flex-direction: column; }
                 .email { font-size: 12px; color: var(--text-secondary); }
                 .trans-id { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
