@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const Course = require('../models/Course');
 const Purchase = require('../models/Purchase');
 
@@ -94,17 +96,39 @@ const updateCourse = async (req, res) => {
     }
 };
 
-// @desc    Delete a course
-// @route   DELETE /api/courses/:id
-// @access  Private/Admin
-const deleteCourse = async (req, res) => {
-    const course = await Course.findById(req.params.id);
+// @desc    Download course file securely
+// @route   GET /api/courses/:id/download/:fileIndex
+// @access  Private
+const downloadFile = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        const fileIndex = parseInt(req.params.fileIndex);
 
-    if (course) {
-        await course.deleteOne();
-        res.json({ message: 'Course removed' });
-    } else {
-        res.status(404).json({ message: 'Course not found' });
+        if (!course || !course.content || !course.content[fileIndex]) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+
+        const purchase = await Purchase.findOne({
+            user: req.user._id,
+            course: course._id,
+            status: 'active'
+        });
+
+        if (!purchase && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Not authorized to download this file' });
+        }
+
+        const file = course.content[fileIndex];
+        // fileUrl is like "/uploads/filename.ext"
+        const filePath = path.join(process.cwd(), file.fileUrl);
+
+        if (fs.existsSync(filePath)) {
+            res.download(filePath, file.title || 'course-material');
+        } else {
+            res.status(404).json({ message: 'File does not exist on server' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -114,4 +138,5 @@ module.exports = {
     createCourse,
     updateCourse,
     deleteCourse,
+    downloadFile,
 };
