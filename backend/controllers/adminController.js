@@ -96,6 +96,34 @@ const getStats = async (req, res) => {
     });
 };
 
+// @desc    Export purchases to CSV
+// @route   GET /api/admin/export-purchases
+// @access  Private/Admin
+const exportPurchases = async (req, res) => {
+    try {
+        const purchases = await Purchase.find({})
+            .populate('user', 'firstName lastName email')
+            .populate('course', 'title');
+
+        let csv = 'User Name,Email,Course,Transaction ID,Amount,Duration (Months),Status,Date\n';
+
+        purchases.forEach(p => {
+            const userName = `${p.user?.firstName || 'Unknown'} ${p.user?.lastName || 'User'}`;
+            const email = p.user?.email || 'N/A';
+            const courseTitle = p.course?.title || 'Deleted Course';
+            const date = new Date(p.createdAt).toLocaleDateString();
+            
+            csv += `"${userName}","${email}","${courseTitle}","${p.transactionId}",${p.amount},${p.duration},"${p.status}","${date}"\n`;
+        });
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=purchases_report.csv');
+        res.status(200).send(csv);
+    } catch (err) {
+        res.status(500).json({ message: 'Export failed' });
+    }
+};
+
 module.exports = {
     getUsers,
     blockUser,
@@ -103,4 +131,5 @@ module.exports = {
     updatePicStatus,
     setAdminPic,
     getStats,
+    exportPurchases,
 };

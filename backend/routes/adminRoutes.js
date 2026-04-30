@@ -7,6 +7,7 @@ const {
     updatePicStatus,
     setAdminPic,
     getStats,
+    exportPurchases,
 } = require('../controllers/adminController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
