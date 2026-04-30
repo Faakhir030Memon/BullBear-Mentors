@@ -64,9 +64,25 @@ const MyLearningPage = () => {
                                             <span>Expires on: {new Date(p.expiryDate).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <Link to={`/courses/${p.course?._id}`} className="btn btn-primary">
-                                        Start Learning <PlayCircle size={18} />
-                                    </Link>
+                                    <div className="course-actions">
+                                        {p.course?.content?.length > 0 ? (
+                                            p.course.content.map((item, idx) => (
+                                                <a 
+                                                    key={idx} 
+                                                    href={item.fileUrl} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer" 
+                                                    className="btn btn-success download-action-btn"
+                                                    title={item.description || item.title}
+                                                >
+                                                    <Download size={18} /> 
+                                                    <span>{item.title || 'Download'}</span>
+                                                </a>
+                                            ))
+                                        ) : (
+                                            <span className="no-material-text">No materials attached</span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))
@@ -148,13 +164,27 @@ const MyLearningPage = () => {
                 .learning-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
                 .active-courses h2 { margin-bottom: 24px; }
                 .course-access-card { padding: 24px; }
-                .card-top { display: flex; align-items: center; gap: 20px; }
+                .card-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
                 .course-icon { 
                     width: 50px; height: 50px; background: var(--bg-secondary); 
                     border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--success);
+                    flex-shrink: 0;
                 }
-                .course-info { flex-grow: 1; }
+                .course-info { flex-grow: 1; min-width: 200px; }
                 .course-info h3 { font-size: 18px; margin-bottom: 4px; }
+                .course-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+                .download-action-btn {
+                    display: flex; align-items: center; gap: 10px;
+                    padding: 10px 20px; font-weight: 600;
+                    box-shadow: 0 4px 12px rgba(0, 200, 5, 0.2);
+                    transition: all 0.3s ease;
+                }
+                .download-action-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 15px rgba(0, 200, 5, 0.3);
+                    filter: brightness(1.05);
+                }
+                .no-material-text { font-size: 13px; color: var(--text-secondary); font-style: italic; }
                 .expiry-info { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
                 .empty-state { text-align: center; padding: 60px; }
                 .pending-section h3 { font-size: 16px; margin-bottom: 20px; }
