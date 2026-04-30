@@ -9,6 +9,7 @@ const {
 } = require('../controllers/certificateController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
+router.get('/public', getPublicCertificates);
 router.route('/')
     .get(protect, admin, getAllCertificates)
     .post(protect, admin, issueCertificate);

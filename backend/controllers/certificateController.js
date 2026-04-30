@@ -46,6 +46,17 @@ const getAllCertificates = async (req, res) => {
     res.json(certificates);
 };
 
+// @desc    Get public certificates for home page
+// @route   GET /api/certificates/public
+// @access  Public
+const getPublicCertificates = async (req, res) => {
+    const certificates = await Certificate.find({})
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .select('recipientName courseTitle certificateId createdAt');
+    res.json(certificates);
+};
+
 // @desc    Get current user's certificates
 // @route   GET /api/certificates/my
 // @access  Private
@@ -87,5 +98,6 @@ module.exports = {
     getAllCertificates,
     getMyCertificates,
     getCertificateById,
+    getPublicCertificates,
     deleteCertificate
 };

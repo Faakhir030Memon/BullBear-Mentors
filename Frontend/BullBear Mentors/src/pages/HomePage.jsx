@@ -15,7 +15,7 @@ const HomePage = () => {
             try {
                 const [storyRes, certRes, courseRes] = await Promise.all([
                     axios.get('/api/stories'),
-                    axios.get('/api/certificates'), // Assuming this is public or we need a public endpoint
+                    axios.get('/api/certificates/public'), 
                     axios.get('/api/courses')
                 ]);
                 setStories(storyRes.data.filter(s => s.type === 'story').slice(0, 3));
