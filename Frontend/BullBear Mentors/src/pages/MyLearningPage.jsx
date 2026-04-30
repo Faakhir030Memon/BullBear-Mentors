@@ -86,29 +86,35 @@ const MyLearningPage = () => {
                         {verificationItems.length > 0 ? (
                             verificationItems.map(p => (
                                 <div key={p._id} className="pending-item">
-                                    <div className="pending-info">
-                                        <strong>{p.course?.title}</strong>
-                                        <span>Trans ID: {p.transactionId}</span>
+                                    <div className="pending-info w-100">
+                                        <div className="pending-header">
+                                            <div className="title-area">
+                                                <strong>{p.course?.title}</strong>
+                                                <span>Trans ID: {p.transactionId}</span>
+                                            </div>
+                                            <span className={`status-badge ${p.status}`}>
+                                                {p.status === 'active' ? 'APPROVED' : 'PENDING'}
+                                            </span>
+                                        </div>
+                                        
                                         {p.status === 'active' && p.course?.content?.length > 0 && (
-                                            <div className="download-area mt-2">
+                                            <div className="download-area mt-3">
                                                 {p.course.content.map((item, idx) => (
                                                     <a 
                                                         key={idx} 
                                                         href={item.fileUrl} 
                                                         target="_blank" 
                                                         rel="noopener noreferrer" 
-                                                        className="download-link"
+                                                        className="download-button"
                                                         title={item.description || item.title}
                                                     >
-                                                        <Download size={12} /> {item.title || 'File'}
+                                                        <Download size={16} /> 
+                                                        <span>Download {item.title || 'Material'}</span>
                                                     </a>
                                                 ))}
                                             </div>
                                         )}
                                     </div>
-                                    <span className={`status-badge ${p.status}`}>
-                                        {p.status === 'active' ? 'APPROVED' : 'PENDING'}
-                                    </span>
                                 </div>
                             ))
                         ) : (
@@ -153,25 +159,37 @@ const MyLearningPage = () => {
                 .empty-state { text-align: center; padding: 60px; }
                 .pending-section h3 { font-size: 16px; margin-bottom: 20px; }
                 .pending-item { 
-                    display: flex; justify-content: space-between; align-items: center; 
-                    padding: 12px 0; border-bottom: 1px solid var(--border-color);
+                    padding: 16px 0; border-bottom: 1px solid var(--border-color);
                 }
                 .pending-info { display: flex; flex-direction: column; }
-                .pending-info strong { font-size: 14px; }
-                .pending-info span { font-size: 11px; color: var(--text-secondary); }
-                .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
-                .status-badge.pending { background: #fff7e6; color: #faad14; }
-                .status-badge.active { background: #f6ffed; color: var(--success); }
-                .no-pending { font-size: 13px; color: var(--text-secondary); }
-                .download-area { display: flex; flex-wrap: wrap; gap: 8px; }
-                .download-link { 
-                    display: flex; align-items: center; gap: 4px; 
-                    font-size: 11px; background: var(--bg-secondary); 
-                    padding: 4px 8px; border-radius: 4px; color: var(--text-main);
-                    text-decoration: none; border: 1px solid var(--border-color);
-                    transition: all 0.2s;
+                .pending-header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+                .title-area { display: flex; flex-direction: column; }
+                .pending-info strong { font-size: 15px; color: var(--text-main); }
+                .pending-info span { font-size: 12px; color: var(--text-secondary); }
+                .status-badge { 
+                    padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; 
+                    text-transform: uppercase; letter-spacing: 0.5px;
                 }
-                .download-link:hover { background: var(--success); color: white; border-color: var(--success); }
+                .status-badge.pending { background: #fff7e6; color: #faad14; border: 1px solid #ffe58f; }
+                .status-badge.active { background: #f6ffed; color: var(--success); border: 1px solid #b7eb8f; }
+                .no-pending { font-size: 13px; color: var(--text-secondary); }
+                
+                .download-area { display: flex; flex-direction: column; gap: 10px; }
+                .download-button { 
+                    display: flex; align-items: center; justify-content: center; gap: 10px; 
+                    font-size: 13px; font-weight: 600;
+                    background: linear-gradient(135deg, var(--success) 0%, #218838 100%);
+                    color: white; padding: 10px 16px; border-radius: 8px;
+                    text-decoration: none; transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+                }
+                .download-button:hover { 
+                    transform: translateY(-2px); 
+                    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.25);
+                    color: white; 
+                    filter: brightness(1.1);
+                }
+                .download-button span { flex-grow: 1; text-align: center; }
                 .help-section h3 { font-size: 16px; margin-bottom: 15px; }
                 .help-section p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
                 .mb-3 { margin-bottom: 1rem; }
