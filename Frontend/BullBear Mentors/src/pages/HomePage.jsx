@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { TrendingUp, Award, Users, BookOpen, ChevronRight, CheckCircle, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import Scene3D from '../components/Scene3D';
 import SmoothScroll from '../components/SmoothScroll';
 
